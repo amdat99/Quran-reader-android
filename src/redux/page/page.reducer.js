@@ -19,7 +19,11 @@ const INITIAL_STATE = {
   currentNotes: [],
   onlineNotes:[],
   onlineMushafs: [],
-  error: null
+  error: null,
+  pagesRead: 1,
+  targets: [],
+  openProfile: false,
+  enterLibrary: false
 };
 
 const pageReducer = (state = INITIAL_STATE, action) => {
@@ -69,6 +73,11 @@ const pageReducer = (state = INITIAL_STATE, action) => {
         ...state,
         currentMushaf: setCurrentMushaf(state.onlineMushafs, action.payload),
       };
+      case pageActionTypes.SET_CURRENT_SHARE_MUSHAF:
+        return {
+        ...state,
+        currentMushaf: action.payload
+        };
         case pageActionTypes.SET_CURRRENT_ONLINE_NOTES:
         return {
           ...state,
@@ -121,6 +130,26 @@ const pageReducer = (state = INITIAL_STATE, action) => {
         ...state,
         currentNotes: setUserNotes(state.pageNotes, action.payload),
       };
+    case pageActionTypes.SET_PAGES_READ:
+      return {
+        ...state,
+        pagesRead: action.payload,
+      }
+      case pageActionTypes.SET_TARGETS:
+        return {
+          ...state,
+          targets: action.payload,
+        }
+      case pageActionTypes.OPEN_PROFILE:
+        return {
+          ...state,
+          openProfile: !state.openProfile
+        }
+      case pageActionTypes.ENTER_LIBRARY:
+        return {
+          ...state,
+          enterLibrary: !state.enterLibrary
+        }
     case pageActionTypes.CLEAR_CURRENT_STATE:
       return {
         ...state,

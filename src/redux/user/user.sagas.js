@@ -1,7 +1,9 @@
 import {takeLatest, put, all, call} from 'redux-saga/effects';
 
-import uuid from 'react-native-uuid';
+import { Alert} from 'react-native';
 
+import uuid from 'react-native-uuid';
+import{ sendProfileChange} from '../../sockets/sockets'
 import {
   signInSuccess,
   signInFailure,
@@ -39,7 +41,10 @@ import {
 export function* signInWithEmail({payload: {email, password}}) {
   try {
 
-    const response = yield fetch('http://192.168.11.177:3000/fetchuser',{
+    // const response = yield fetch('http://192.168.11.177:3000/fetchuser',{
+      const response = yield fetch(
+        "https://quranlive-api.herokuapp.com/fetchuser",
+        {
       method: "post",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -51,10 +56,19 @@ export function* signInWithEmail({payload: {email, password}}) {
   const data = yield response.json();
   console.log(data);
  {
+   
+  if(data !== "wrong credentials"){
     yield put(signInSuccess(data));
+
+    if(data == "wrong credentials"){
+      yield put(signInFailure(data))
+    }
+  
     yield put(setLibraryType())
+  
     yield put(fetchCopiesPending(data[0].contentid));
-    
+
+  }  
   }
   } catch (error) {
     yield put(signInFailure(error));
@@ -102,10 +116,10 @@ export function* registerUserAsync({
 
   console.log({payload:{ userName,password,email,userId,profileId,contentId }})
   try {
-    // const response = yield fetch(
-    //   "https://aamirproject-api.herokuapp.com/addmessages",
-    //   {
-        const response = yield fetch('http://192.168.11.177:3000/adduser',{
+    const response = yield fetch(
+      "https://quranlive-api.herokuapp.com/adduser",
+      {
+        // const response = yield fetch('http://192.168.11.177:3000/adduser',{
         method: "post",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

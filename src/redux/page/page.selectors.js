@@ -36,3 +36,21 @@ export const selectNotes = createSelector([selectPage], page =>
 export const selectCurrentNotes = createSelector([selectPage], page =>
   page.currentNotes ? page.currentNotes : [],
 );
+
+export const selectPagesRead = createSelector([selectPage], page =>
+  page.pagesRead 
+);
+
+export const selectTargets = createSelector([selectPage], page =>
+  page.targets 
+);
+
+export const selectOpenProfile = createSelector([selectPage], page =>
+  page.openProfile 
+);
+
+export const selectLibrary = createSelector([selectPage], page =>
+  page.enterLibrary
+);
+
+

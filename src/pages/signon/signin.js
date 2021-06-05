@@ -12,9 +12,10 @@ import {createStructuredSelector} from 'reselect';
 
 import {StyleSheet, Text, View, TextInput, Platform, Alert} from 'react-native';
 
-function SignIn({googleSignInPending, emailSignInPending,toggleLogin,toggleVerify}) {
+function SignIn({googleSignInPending, emailSignInPending,toggleLogin,toggleVerify,currentUser}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
 
   const handleSubmit = async () => {
     if (!email || !password) {
@@ -24,10 +25,11 @@ function SignIn({googleSignInPending, emailSignInPending,toggleLogin,toggleVerif
       return;
     }
     emailSignInPending(email, password);
-    setSignin(true);
+ 
+    
+    
   };
 
-  console.log(password);
 
   return (
     <>
@@ -46,9 +48,10 @@ function SignIn({googleSignInPending, emailSignInPending,toggleLogin,toggleVerif
           type="password"
           placeholder="Enter your password"
           onChangeText={setPassword}
+          secureTextEntry={true}
           style={styles.inputs}
         />
-
+      
         <View style={styles.buttons}>
           <Text style={styles.buttonText} onPress={handleSubmit}>
             {' '}

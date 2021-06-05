@@ -13,18 +13,29 @@ import {
     TouchableOpacity,
     Button,
     Dimensions
+    
   } from 'react-native';
 
-  function CopyOffline({showDelete, onEnterCopy, setShowDelete, deleteM,mushaf}) {
+  function CopyOffline({showDelete, onEnterCopy, setShowDelete, deleteM,mushaf,toggleTargets, setShareCopy, setToggleShare}) {
+
+    const onStartCopyShare = (copy) => {
+      setToggleShare(true);
+      setShareCopy(copy)
+    }
     return (
             
               <View style={styles.mushafs} accessibilityRole="button" >
             { showDelete?
+            <>
+             
                   <Text
-                    style={{position: 'absolute',color: 'red',zIndex:88,marginLeft:50,}}
-                    onPress={() => deleteM(mushaf)}>
-                    delete
+                    style={{position: 'absolute',color: '#c2b280',zIndex:88,marginLeft: 40, marginTop:-10}}
+                    onPress={()=> onStartCopyShare(mushaf)} >
+                    Share Copy
                   </Text>
+                  <Text style={{position: 'absolute',color: '#c2b280',zIndex:88,marginLeft: 40,marginTop:10}} onPress={toggleTargets}>Set targets</Text>
+            
+                  </>
                   :null}
                 <TouchableOpacity
                   onPress={() => 
@@ -45,7 +56,12 @@ import {
                       backgroundColor: '#a27a55',
                       width: 90
                     }}></Text>
-                </TouchableOpacity>
+   
+                   
+                </TouchableOpacity> 
+                                 {showDelete ?
+                <Text style={{marginLeft: 50,color: 'red',zIndex:88,}} onPress={() => deleteM(mushaf)}>Delete</Text> 
+                    :null}
               </View>
     );
 }

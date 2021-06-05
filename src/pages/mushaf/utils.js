@@ -1,8 +1,8 @@
  export const  updateCounter = async (status) => { 
 
  try {
-
-    const response = await fetch('http://192.168.11.177:3000/usercounter',{
+  const response = await fetch('https://quranlive-api.herokuapp.com/usercounter',{
+    // const response = await fetch('http://192.168.11.177:3000/usercounter',{
       method: "put",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

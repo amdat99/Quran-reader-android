@@ -64,7 +64,10 @@ function NavHeader({
   setBookmarks,
   storedBookmarks,
   storedNotes,
-  setNotes
+  setNotes,
+  numberOfPages,
+  onNote,
+  onBookmark
 }) {
   const [onJuz, setOnJuz] = useState(false);
   const [bTitle, setBTitle] = useState('');
@@ -168,6 +171,7 @@ else{
   }
     setBTitle('');
     setCurrentBookmarks(mushaf);
+    onBookmark()
   };
 
   
@@ -209,6 +213,7 @@ else{
   }
     setNoteTitle('');
     setNote('');
+    onNote()
     
   };
 
@@ -225,7 +230,7 @@ else{
     });
   };
 
-  console.log('dd',onlineBookmarks)
+
 
   return (
     <>
@@ -272,13 +277,15 @@ else{
           <ScrollView style={styles.juzPage}>
             <Text  style = {{color: 'red',marginLeft:  Dimensions.get('window').width / 5}}onPress={closePage}>
               X
-            </Text>
+            </Text>   
+            <Text>total pages: {numberOfPages}</Text>
             <TextInput
               onSubmitEditing={setPageInput}
               keyboardType="numeric"
               onChangeText={onPage}
-              placeholder="page"
+              placeholder={`type page`}
             />
+         
             <Text onPress={setPageInput}>enter </Text>
           </ScrollView>
         ) : null}
@@ -306,7 +313,7 @@ else{
                 <Text
                   key={bookmark.bookmarkid} onLongPress ={() => setOnDelete(!onDelete)}
                   onPress={() => onSetPage(bookmark.page)}>
-                  page:{bookmark.page} {bookmark.title}
+                  page:{bookmark.page} {bookmark.title} ({bookmark.date.slice(0, 10)})
                 </Text>
                 { onDelete?
                 <Text key={i} style={{color:'red'}} onPress={()=>deleteBookmark(bookmark)}>Delete</Text>
@@ -357,7 +364,7 @@ else{
         {note.title}: {note.note}
       </Text>
       <Text onPress={() => onSetPage(note.page)}>
-        (page:{note.page})
+        (page:{note.page}) ({note.date.slice(0, 10)})
       </Text>
 
       { onDelete?
@@ -440,18 +447,18 @@ const styles = StyleSheet.create({
   container: {
     position: 'absolute',
     top: 10,
-
+    
+    borderRadius:10,
     flexDirection: 'row',
     justifyContent: 'flex-start',
 
     flex: 1,
 
-    opacity: 0.8,
   },
 
   juzPage: {
-    maxHeight: Dimensions.get('window').height / 6,
-
+    maxHeight: Dimensions.get('window').height / 4,
+    borderRadius:10,
     position: 'relative',
     fontSize: 28,
     marginLeft: 20,
@@ -466,8 +473,9 @@ const styles = StyleSheet.create({
     fontSize: 28,
     marginLeft: 20,
     backgroundColor: 'white',
-    maxWidth: 100,
+    maxWidth: 110,
     padding: 2,
+    borderRadius:10,
   },
   addBookmark: {
     marginLeft: 50,
@@ -475,6 +483,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width / 2,
     backgroundColor: 'white',
     padding: 2,
+    borderRadius:10,
   },
   addNote: {
     marginLeft: 20,
@@ -484,6 +493,7 @@ const styles = StyleSheet.create({
     padding: 2,
     marginBottom: Dimensions.get('window').height / 12,
     marginRight: 10,
+    borderRadius:10,
   },
 
   bookmark: {
@@ -495,6 +505,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     width: 100,
     marginRight: 20,
+    borderRadius:10,
   },
   closePage: {
     marginLeft: 100,
@@ -511,7 +522,8 @@ const styles = StyleSheet.create({
   notelinks: {
     flex:1,
     flexDirection: 'row',
-    fontSize: 10
+    fontSize: 10,
+    borderRadius:10,
   }
 });
 

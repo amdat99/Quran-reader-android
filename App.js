@@ -41,14 +41,21 @@ export default function App() {
 
       }} name="library" component={Library} />
             <Stack.Screen name="Quran" component={Mushaf} 
+            screenOptions={{ headerShown: false }} 
             options={{
         
               headerStyle: {
-               height: 35,
+               height: 30,
+              },
+              headerTitleStyle: {
+                
+              fontSize: 15
+
               },
 
             }}/>
-            <Stack.Screen name="signon" component={SignOn} />
+            <Stack.Screen screenOptions={{ headerShown: false }} 
+             name="signon" component={SignOn} />
           </Stack.Navigator>
         </NavigationContainer>
       </PersistGate>

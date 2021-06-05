@@ -1,5 +1,6 @@
 import userActionTypes from './user.types';
 
+
 // export const setCurrentUser = (user)=> ({
 //     type: userActionTypes.SET_CURRENT_USER,
 //     payload: user
@@ -23,6 +24,7 @@ export const emailSignInPending = emailAndPassword => ({
   type: userActionTypes.EMAIL_SIGNIN_PENDING,
   payload: emailAndPassword,
 });
+
 
 export const signUpPending = signUpData => ({
   type: userActionTypes.SIGN_UP_START,
@@ -117,5 +119,44 @@ export const setLibraryType = (type) =>({
 
 export const toggleTimer = () =>({
   type: userActionTypes.TOGGLE_TIMER
+})
+
+export const setRoom = (room) =>({
+  type: userActionTypes.ROOM,
+  payload: room
+})
+
+export const setLastMessage = (message) =>({
+  type: userActionTypes.LAST_MESSAGE,
+  payload: message
+})
+
+export const setMessage = (message) =>({
+  type: userActionTypes.MESSAGE,
+  payload: message
+})
+
+export const setName = (name) =>({
+  type: userActionTypes.NAME,
+  payload: name
+})
+
+export const clearChat = () =>({
+  type: userActionTypes.CLEAR_CHAT
+})
+
+export const setStream = (stream) =>({
+type: userActionTypes.STREAM,
+payload: stream
+})
+
+export const onShare = (bool) =>({
+  type: userActionTypes.ONSHARE,
+  payload: bool
+})
+
+export const setShareData = (shareData) =>({
+  type: userActionTypes.SET_SHARE_DATA,
+  payload: shareData
 })
 

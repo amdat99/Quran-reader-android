@@ -162,17 +162,24 @@ export const setNoteFailure = (e) => ({
   payload: e
 })
 
-export const fetchNotesPending = (id) => ({
-  type: pageActionTypes.FETCH_NOTES_PENDING,
-  payload: id
+export const setPagesRead = (pages) =>({
+  type: pageActionTypes.SET_PAGES_READ,
+  payload: pages
 })
 
-export const fetchNotesSuccess = (boomarkData) => ({
-  type: pageActionTypes.FETCH_NOTES_SUCCESS,
-  payload: boomarkData
+export const setTargets = (targets) => ({
+  type: pageActionTypes.SET_TARGETS,
+  payload: targets
 })
 
-export const fetchNotesFailed = (e) => ({
-  type: pageActionTypes.FETCH_NOTES_FAILURE,
-  payload: e
+export const setOpenProfile = () => ({
+  type: pageActionTypes.OPEN_PROFILE
+})
+
+export const enterLibrary = () => ({
+  type: pageActionTypes.ENTER_LIBRARY
+})
+export const setCurrentShareMushaf = (mushafData) => ({
+  type: pageActionTypes.SET_CURRENT_SHARE_MUSHAF,
+  payload: mushafData
 })

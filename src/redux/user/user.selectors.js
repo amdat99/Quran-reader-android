@@ -39,3 +39,38 @@ export const selectLibrary = createSelector([selectUser], user =>
 export const selectTimer = createSelector([selectUser], user =>
   user.timerStart 
 );
+
+export const selectRoom= createSelector([selectUser], user =>
+  user.room 
+);
+
+export const selectLastMessage = createSelector([selectUser], user =>
+  user.lastMessage 
+);
+
+export const selectStream = createSelector([selectUser], user =>
+  user.stream 
+);
+
+
+let reversedArray = []
+let turn = true
+
+export const selectMessage = createSelector([selectUser], user =>{
+ if(turn && user.message){ reversedArray = user.message.reverse()}
+ turn = !turn
+return user.message ? reversedArray: []
+}
+);
+
+export const selectName = createSelector([selectUser], user =>
+  user.name 
+);
+
+export const selectShareData = createSelector([selectUser], user =>
+  user.shareData 
+);
+
+export const selectOnShare = createSelector([selectUser], user =>
+  user.onShare
+);

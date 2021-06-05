@@ -2,7 +2,8 @@ import io from "socket.io-client";
 let socket;
 
 export const initiateSocket = (room) => {
-  socket = io("http://192.168.11.177:3000/", {
+  
+  socket = io("https://quranlive-api.herokuapp.com/", {
     // socket = io("http://localhost:4000/", {
     transports: ["websocket"],
   });
@@ -22,23 +23,34 @@ export const testSocket = (data) => {
 
 export const enterChat = (data) => {
   if (!socket) return;
-  socket.on("chat", (message) => {
+  socket.on("livemsg", (message) => {
     console.log("message received");
     return data(null, message);
   });
 };
 
-export const sendMessage = (room, message) => {
+export const sendMessage = (name, message,room) => {
   console.log("message sent");
-  if (socket) socket.emit("chat", { message, room });
+  if (socket) socket.emit("livemsg", { message, name,room });
 };
 
 
+export const enterAudioLink = (data) => {
 
+  socket.on("audiolink", (message) => {
+    console.log("audio data received");
+    return data(null, message);
+  });
+};
+
+export const sendAudioLink = (payload,name,type) =>{
+  console.log("audio data sent");
+  if (socket) socket.emit("audiolink", { payload, name,type });
+}
 
 export const enterProfileChange = (data) => {
-  if (!socket) return;
-  socket.on("profilechange", (message) => {
+
+  socket.on("onprofile", (message) => {
     console.log("profile req received");
     return data(null, message);
   });
@@ -46,7 +58,7 @@ export const enterProfileChange = (data) => {
 
 export const sendProfileChange = () => {
   console.log("profile req sent");
-  if (socket) socket.emit("profilechange");
+  if (socket) socket.emit("onprofile");
 };
 
 export const enterOnCounter = (data) => {
@@ -77,19 +89,6 @@ export const sendGroupMsgRequest = () => {
 };
 
 
-export const enterCreateRoom = (data) => {
-  if (!socket) return;
-  socket.on("onroom", (room) => {
-    console.log("room request");
-    return data(null, room);
-  });
-};
-
-export const sendRoomRequest = () => {
-  console.log(" sending room request");
-  if (socket) socket.emit("onroom");
-};
-
 export const enterCall = (data) => {
   if (!socket) return;
   socket.on("begincall", (profileId) => {
@@ -103,41 +102,3 @@ export const sendProfile = (profileId) => {
   if (socket) socket.emit("begincall", { profileId });
 };
 
-export const enterSDP = (data) => {
-  if (!socket) return;
-  socket.on("offer", (sdp) => {
-    console.log("s received");
-    return data(null, sdp);
-  });
-};
-
-export const sendSDP = (sdp, videoId) => {
-  socket.emit("offer", { sdp, videoId });
-  console.log("offer sent");
-};
-
-export const enterCand = (data) => {
-  if (!socket) return;
-  socket.on("oncandidate", (candidate, videoId) => {
-    console.log(" got candidate");
-    return data({ candidate: candidate, id: videoId });
-  });
-};
-
-export const sendCand = (candidate, videoId) => {
-  console.log("candidate sent");
-  if (socket) socket.emit("oncandidate", { candidate, videoId });
-};
-
-export const checkJoined = (data) => {
-  if (!socket) return;
-  socket.on("checkjoined", (videoId) => {
-    console.log(" offer ready to be sent");
-    return data(null, videoId);
-  });
-};
-
-export const sendId = (videoId) => {
-  console.log("id sent");
-  if (socket) socket.emit("checkjoined", { videoId });
-};

@@ -1,4 +1,5 @@
 {
   "name": "ql",
-  "displayName": "ql"
+  "displayName": "ql",
+  "logo": "./logo.png"
 }

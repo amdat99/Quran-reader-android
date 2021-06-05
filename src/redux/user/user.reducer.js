@@ -1,6 +1,12 @@
 import userActionTypes from './user.types';
 import {mapUserData} from './user.utils'
 
+import {
+  addBookmark,
+
+} from '../page/page.utils';
+
+
 const INITIAL_STATE = {
   pending: false,
   currentUser: null,
@@ -10,8 +16,15 @@ const INITIAL_STATE = {
   recievedMessage: null,
   profileName: null,
   libraryType: false,
-  time: null,
   timerStart: false,
+  time:null,
+  room:123,
+  message:[],
+  lastMessage: null,
+  name:null,
+  stream:null,
+  onShare:null,
+  shareData:null,
 };
 const userReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -84,7 +97,46 @@ const userReducer = (state = INITIAL_STATE, action) => {
         ...state,
         time:action.payload,
       }
-  
+    case userActionTypes.ROOM:
+      return {
+        ...state,
+        room: action.payload
+      }
+    case userActionTypes.LAST_MESSAGE:
+      return {
+        ...state,
+        lastMessage: action.payload
+      }
+      case userActionTypes.MESSAGE:
+        return {
+          ...state,
+          message: addBookmark(state.message, action.payload)
+        }
+      case userActionTypes.NAME:
+        return {
+          ...state,
+          name: action.payload
+        }
+      case userActionTypes.CLEAR_CHAT:
+        return {
+          ...state,
+          message: []
+        }
+      case userActionTypes.STREAM:
+        return {
+          ...state,
+          stream: action.payload
+        }
+      case userActionTypes.ONSHARE:
+        return {
+          ...state,
+          onShare: action.payload
+        }
+      case userActionTypes.SET_SHARE_DATA:
+        return {
+          ...state,
+          shareData: action.payload
+        }
     case userActionTypes.SIGNIN_FAILED:
     case userActionTypes.SIGNOUT_FAILED:
     case userActionTypes.SIGN_UP_FAILURE:

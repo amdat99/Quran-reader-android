@@ -56,7 +56,6 @@ function Register({signUpPending,toggleLogin}) {
     // }
   };
 
-  console.log(userName, email, password);
 
   return (
     <>
@@ -80,12 +79,14 @@ function Register({signUpPending,toggleLogin}) {
         <TextInput
           autoCompleteType="password"
           placeholder="Enter your password"
+          secureTextEntry={true}
           onChangeText={setPassword}
           style={styles.inputs}
         />
         <TextInput
           autoCompleteType="password"
           placeholder=" Re-enter your password"
+          secureTextEntry={true}
           onChangeText={setConfirmPassword}
           style={styles.inputs}
         />

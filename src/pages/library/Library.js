@@ -3,9 +3,12 @@ import {connect} from 'react-redux';
 import {createStructuredSelector} from 'reselect';
 import uuid from 'react-native-uuid';
 
-import CopyOffline from '../../components/copy-offline/Copy-offline'
 
-import {selectCurrentUser, selectTimer} from '../../redux/user/user.selectors';
+import CopyOffline from '../../components/copy-offline/Copy-offline'
+import Profiles from '../../components/profiles/Profiles'
+import MessageBox from '../../components/message-box/Message-box'
+
+import {selectCurrentUser, selectStream, selectMessage, selectTimer, selectLastMessage, selectRoom, selectName} from '../../redux/user/user.selectors';
 import {
   addMushaf,
   setMushafs,
@@ -14,11 +17,14 @@ import {
   setNotes,
   fetchCopiesPending,
   setCopiesPending,
-  setCurrentOnlineMushaf
+  setCurrentOnlineMushaf,
+  setPagesRead,
+  setTargets
 } from '../../redux/page/page.actions';
 
-import {selectMushafs, selectOnlineMushafs, selectBookmarks, selectNotes,  } from '../../redux/page/page.selectors';
-import {signOutPending,setLibraryType,toggleTimer} from '../../redux/user/user.actions';
+import {selectMushafs, selectLibrary,  selectOpenProfile, selectOnlineMushafs, selectBookmarks, selectNotes,selectPagesRead , selectTargets} from '../../redux/page/page.selectors';
+import {signOutPending,setLibraryType,toggleTimer,setRoom, setLastMessage, clearChat,setName,onShare,setShareData} from '../../redux/user/user.actions';
+import { mediaDevices, RTCView } from 'react-native-webrtc';
 
 import {
   StyleSheet,
@@ -30,12 +36,11 @@ import {
   TextInput,
   ScrollView,
   TouchableOpacity,
-  Button,
   Dimensions
 } from 'react-native';
 
-import {getCount,deleteCopy} from './utils'
-import {enterOnCounter} from '../../sockets/sockets'
+import {getCount,deleteCopy,fetchProfiles,updateStatus} from './utils'
+import {enterOnCounter, enterProfileChange,sendAudioLink, sendProfileChange, initiateSocket, enterChat,disconnectSocket} from '../../sockets/sockets'
 
 import { add } from 'react-native-reanimated';
 
@@ -57,28 +62,72 @@ function Library({
   setCurrentOnlineMushaf,
   setLibraryType,
   toggleTimer,
-  timer
+  timer,
+  setRoom,
+  room,
+  pagesRead,
+  setPagesRead,
+  targets,
+  setTargets,
+  setLastMessage,
+  message,
+  openProfile,
+  name,
+  clearChat,
+  lastMessage,
+  setName,
+  enterLibrary,
+  stream,
+  onShare,
+  setShareData
 }) {
 
-  const minutesToMilis = (time) => { 
-    return time * 1000 * 60
-   }
 
   const [toggleOnAdd, setToggleOnAdd] = useState(false);
   const [mtitle, setTitle] = useState(undefined);
-  const [currentCover,setCurrentCover] = useState(undefined);
   const[cover,setCover] = useState(undefined);
   const [showDelete,setShowDelete] = useState(false);
-  const [userCount,setUserCount] = useState(0);
+  const [userCount,setUserCount] = useState(undefined);
   const [toggleCopiesType,setToggleCopiesType] = useState(false);
  const [time, setTime] = useState(0);
+ const [profileData, setProfileData] = useState(undefined);
+ const [toggleProfiles, setToggleProfiles] = useState(false);
+ const [profileNumber, setProfileNumber] = useState(0)
+ const [profileChange, setProfileChange] = useState(null)
+ const [showMes, setShowMes] = useState(false)
+ const [showMessage,setShowMessage] = useState(false)
+ const [showTargets,setShowTargets] = useState(false)
+ const [targetPages,setTargetPages] = useState(null)
+ const [targetTime,setTargetTime] = useState(null)
+ const [lastProfile, setLastProfile] = useState(null)
+ const [shareCopy, setShareCopy] = useState(null)
+ const [toggleShare, setToggleShare] = useState(false)
+
+
+// useEffect(() =>{
+
+// fetchProfiles().then(data => setProfileData(data))
+
+// setTimeout(function(){ sendProfileChange() }, 1000);
+
+// },[enterLibrary])
+
+
+ useEffect(() =>{
+   
+   setTimeout(function(){  console.log('fetch profiles'); fetchProfiles().then(data => setProfileData(data)) }, 1000);
+
+   setTimeout(function(){  getOnlineNum() }, 2000);
+ },
+ [profileChange, setProfileChange])
 
  
  useEffect(() =>{
  
   
    timer ? null
-    :setTimeout(function(){   setTime(0)}, 6000);
+    // :setTimeout(function(){  resetMessage()}, 9000); 
+    :null
    
  },[timer])
 
@@ -99,9 +148,25 @@ function Library({
   
   useEffect(() =>{setShowDelete(false)},[])
 
-  useEffect(() => {getCount().then(data => setUserCount(data)) },[])
+  useEffect(() => {
+    getCount().then(data => setUserCount(data)) 
+    },[])
 
   useEffect(() =>{ 
+    fetchProfiles().then(data => setProfileData(data))
+  
+  },[currentUser])
+
+  useEffect(() =>{
+    if(profileData){
+         getOnlineNum()
+    }
+  },[profileData])
+
+  useEffect(() =>{ 
+
+    
+  if (room) initiateSocket(room);
     enterOnCounter((err, data) => {
       if (err) return;
         if(data === 'change'){
@@ -109,17 +174,48 @@ function Library({
 }
         console.log("fetching user counters");
       })
-    })
-  
+
+       enterProfileChange  ((err, data)  =>{
+        if (err) return;
+        console.log('profiles',data)
+                setProfileChange(data)
+        
+      })
+
+      // enterChat ((err, data)  =>{
+        
+      //   if (err) return;
+      //   console.log('message',data)
+      //   if(data){
+      //   setMessage(existingdata =>[data.name+': '+data.message, ...existingdata])
+      //   setName(data.name)
+      //   setTimeout(function(){  toggleMessage()}, 1000);
+
+     
+      //   }
+       
+      // })
+    },[room])
+
 
 useEffect(() =>{
     if(currentUser){
       fetchCopiesPending(currentUser[0].contentid)
+      
+
+      
       setToggleCopiesType(true)
     }
   }
   ,[currentUser])
  
+useEffect(() => {
+  toggleMessage()
+},[lastMessage,name])
+
+   useEffect(() =>{
+      setToggleProfiles(true)
+   },[openProfile])
 
   const covers = [
     {id:1, src: true},
@@ -150,6 +246,10 @@ const addMushafData = async () => {
 
   };
 
+  const toggleMessage = () => {
+    setShowMes(true)
+    setTimeout(function(){  setShowMes(false) }, 8000);
+}
   const addOnlineMushafData = async () => {
     if (!mtitle || !cover) {
      
@@ -165,11 +265,26 @@ const addMushafData = async () => {
   setToggleOnAdd(false)
 
   setTimeout(function(){  fetchCopiesPending(currentUser[0].contentid) }, 500);
+};
 
+const onSignOut = () => {
+  updateStatus('offline',currentUser[0].userid)
+  setRoom(123)
+  setProfileNumber(0)
+  setTimeout(function(){ signOutPending();   }, 500);
+  setTimeout(function(){ sendProfileChange()  }, 1000);
+ 
+ 
 
+}
 
-  };
-
+const resetMessage = () => {
+  setTime(0); 
+  setTargetPages(null); 
+  setTargetTime(null); 
+  setPagesRead(1)
+  
+}
   const deleteM = deletion => {
 
     if(toggleCopiesType){ 
@@ -195,6 +310,16 @@ const addMushafData = async () => {
     setShowDelete(false);
   };
 
+  const onCopyShare = async () => {
+   
+    // await setShareData({id:id, userid:userid,change:Math.random()});
+    await setRoom
+    await sendAudioLink(shareCopy,currentUser[0].name,'startshare')
+   await onShare(true);
+    await onEnterCopy(shareCopy.id)
+  }
+
+
   const onEnterCopy = (id) => {
     if(toggleCopiesType){
       setCurrentOnlineMushaf(id)
@@ -204,46 +329,156 @@ const addMushafData = async () => {
     setLibraryType(false)
       }
     navigation.navigate('Quran');
+    resetMessage()
     toggleTimer()
- 
- 
     
-  }
 
-
+    if(currentUser){
+      updateStatus('praying',currentUser[0].userid)
+      sendProfileChange()
+    }}
+const getOnlineNum = () => {
  
-  const toggleLibraries = () => {
+if(profileData){
+    profileData.map(profile =>{
+   let online = 0
+   if(profile.status === 'online'||profile.status === 'praying'){
+     online = online +1
+   }
+   setProfileNumber(online)
+  })}
+}
+
+const openMessage = () => {
+  setShowMessage(!showMessage)
+}
+ const toggleLibraries = () => {
     setToggleCopiesType(!toggleCopiesType)
-   
+   }
+
+  let minutes = Math.floor(time / 60);
+  let seconds = time - minutes * 60;
+
+  const onNotSignedIn = () => {
+  Alert.alert(' live chat', ' sign in to send messages', [], {
+    cancelable: true,
+   }) 
+
+   setShowMessage(false)
+}
+
+const toggleTargets = () => {
+  setShowTargets(!showTargets)
+}
+
+const onSetTargets = () => {
+
+  if(!targetTime || !targetPages){
+    return
   }
+  setTargets({spages: targetPages, time:targetTime})
+  toggleTargets(); 
+  setShowDelete(false)
+}
 
   console.log(time)
+
+
   return (
     <>
-      <ScrollView style={styles.mainContainer}>
-        {time> 3 && time< 6000?
+      <ScrollView style={styles.mainContainer}>    
+      
+      
+{/*   
+        { stream ?     
+          <> 
+        <Text>hello</Text>
+          <RTCView
+            streamURL={stream.toURL()}
+            style={styles.stream} />
+          </>
+        :null} */}
+      
+      
+      { time> 3 ?
+      <View style ={styles.topmessage}>
+        <View style={{flex: 1, flexDirection:'row',}}>
+        {time> 3 && time<= 3600?
+      
         time > 60 ?
-        <Text style={{marginLeft: 5, fontSize:13,marginBottom:5}}>Subhanllah you prayed for {(time / 60).toFixed(2)} minutes. keep it up. </Text>
+        <Text style={{marginLeft: 5, fontSize:13,marginBottom:5}}>Subhanllah you prayed for {minutes}:0{seconds} minutes. keep it up. </Text>
         : <Text style={{marginLeft: 5,fontSize:13,marginBottom:5}}>Alhamdulillah you were praying for {time} seconds </Text>
         :null}
-        {time> 6000 ?
-             <Text style={{marginLeft: 5, fontSize:13,marginBottom:5}}>Allahuakbar wow! you prayed for {(time / 60).toFixed(2)} minutes. keep it up. </Text>
+        {time> 3600 ?
+             <Text style={{marginLeft: 5, fontSize:13,marginBottom:5}}>Allahuakbar wow! you prayed for {minutes}:0{seconds} minutes. keep it up. </Text>
+        :null}  
+        {}
+        {time>3?
+       
+        <Text style={{marginLeft: 5,}} onPress={()=>{ resetMessage(); setTargets(null)}}>X</Text>
         :null}
+       
+      
+ 
+     </View >      
+
+      {time>3?
+      pagesRead === 4 ?
+      <Text style={{marginLeft: 5, fontSize:13,marginBottom:5}}>You Read {pagesRead-3} page</Text>
+      : <Text style={{marginLeft: 5, fontSize:13,marginBottom:5}}>You Read {pagesRead-3} pages</Text>
+      :null}
+
+          {time>3 && targets?
+          <View>
+            {pagesRead === 4 ?
+          <Text style={{marginLeft: 5, fontSize:13,marginBottom:5}}>
+          Your target was to spend {targets.time} minutes to pray {targets.spages} page
+          </Text> 
+           : <Text style={{marginLeft: 5, fontSize:13,marginBottom:5}}>
+           Your target was to spend {targets.time} minutes to pray {targets.spages} pages
+           </Text> }
+       { pagesRead-3 >=targets.spages  && minutes >= targets.time ?
+         <Text style={{marginLeft: 5, fontSize:13,marginBottom:5}}>
+         You smashed your target. Allahuakbar
+       </Text> 
+        : <Text style={{marginLeft: 5, fontSize:13,marginBottom:5}}>
+        Try meeting your target next time inshallah.
+      </Text> }
+       </View>
+       :null} 
+
+       {time>3?  <Text  style={{ height: 1,
+                      backgroundColor: '#e8d087',
+                      width: Dimensions.get('window').width/1.5, marginBottom:5}}></Text>:null}
+  
+</View>
+:null}  
+
+{ currentUser && showMes && lastMessage? 
+currentUser[0].name === name ? null :
+
+<View style ={styles.topmessage}>
+    <Text style={{marginLeft:10 ,fontSize:15}}> {lastMessage}</Text>
+    <Text  onPress={() => setShowMes(false)} style={{marginLeft:10 ,fontSize:12, color:'red'}}>x</Text>
+   </View> 
+   :null
+   }
         <View style={styles.signonText}>
-          {currentUser ? (
+          {userCount?
+          currentUser ? (
             <View>
-              <Text style={{ position: 'absolute',left: Dimensions.get('window').width/5.5}} onPress={signOutPending}> sign out</Text>
+              <Text style={{ position: 'absolute',left: Dimensions.get('window').width/5.5}} onPress={onSignOut}> sign out</Text>
             </View>
           ) : (
             <Text onPress={() => navigation.navigate('signon')}>
               signin/register
             </Text>
-          )}
+          ): null}
           {currentUser?
         
           toggleCopiesType ? 
-          <Text onPress={toggleLibraries} style={{ position: 'relative' , left:Dimensions.get('window').width/20,marginTop:25,backgroundColor: '#e8d087', borderRadius:30,padding:2}} onPress={toggleLibraries}> Set Offline Library </Text>
-          :<Text onPress={toggleLibraries} style={{ position: 'relative' , left:Dimensions.get('window').width/20,marginTop:25,backgroundColor: '#e8d087', borderRadius:30,padding:2}} onPress={toggleLibraries}> Set Online Library </Text>
+          <Text onPress={toggleLibraries} style={{ position: 'relative' , left:Dimensions.get('window').width/20,marginTop:35,backgroundColor: '#e8d087', borderRadius:30,padding:2}} onPress={toggleLibraries}> Set Offline Library </Text>
+          :<Text onPress={toggleLibraries} style={{ position: 'relative' , left:Dimensions.get('window').width/20,marginTop:35,backgroundColor: '#e8d087', borderRadius:30,padding:2}} onPress={toggleLibraries}> Set Online Library </Text>
        
           
     
@@ -252,7 +487,7 @@ const addMushafData = async () => {
         userCount.map((count,i) =>
           <>
           <Text key = {count.count} style={{left:30,position:'absolute',marginTop:3}}> {count.count} users are praying</Text>
-          <Text key = {i} style={{left:35,position:'absolute',marginTop:21,     height: 1,
+          <Text key = {i} style={{left:30,position:'absolute',marginTop:21,     height: 1,
                       backgroundColor: '#e8d087',
                       width: Dimensions.get('window').width/3,}}></Text>
           </>
@@ -263,48 +498,82 @@ const addMushafData = async () => {
         <View style={styles.container}>
           
           <Text>
-            {currentUser?
- toggleCopiesType?
+    {currentUser?
+    toggleCopiesType?
+    onlineCopies?
     onlineCopies.map((mushaf, i) => (
             
   <View key={mushaf.id} >
 
-   <CopyOffline mushaf={mushaf} deleteM={deleteM} onEnterCopy={onEnterCopy}
-   showDelete={showDelete} setShowDelete = {setShowDelete} />
+   <CopyOffline mushaf={mushaf} deleteM={deleteM} onEnterCopy={onEnterCopy} 
+  setShareCopy={setShareCopy} setToggleShare={setToggleShare}
+    showDelete={showDelete} setShowDelete = {setShowDelete}  toggleTargets = {toggleTargets}/>
   </View>))
 
-  :
-      mushafs?
+  : null
+ 
+:null
+ 
+
+: mushafs?
   mushafs.map((mushaf, i) => (
             
     <View key={mushaf.id} >
-     <CopyOffline mushaf={mushaf} deleteM={deleteM} onEnterCopy={onEnterCopy}
-     showDelete={showDelete} setShowDelete = {setShowDelete} />
+     <CopyOffline mushaf={mushaf} deleteM={deleteM} onEnterCopy={onEnterCopy} 
+     setShareCopy={setShareCopy} showDelete={showDelete} setToggleShare={setToggleShare}
+     setShowDelete = {setShowDelete} toggleTargets ={toggleTargets}/>
     </View>))
-:null
+  :null}
+ 
+  
 
 
-: mushafs.map((mushaf, i) => (
+          </Text>
+        </View>
+
+    <View  style={styles.container2 }>
+        { toggleCopiesType? null :
+      currentUser?
+mushafs.map((mushaf, i) => (
             
             <View key={mushaf.id} >
-             <CopyOffline mushaf={mushaf} deleteM={deleteM} onEnterCopy={onEnterCopy}
-             showDelete={showDelete} setShowDelete = {setShowDelete} />
+             <CopyOffline mushaf={mushaf} deleteM={deleteM} onEnterCopy={onEnterCopy} 
+                setToggleShare={setToggleShare}  setShareCopy={setShareCopy}  showDelete={showDelete} 
+                setShowDelete = {setShowDelete} toggleTargets ={toggleTargets} />
        
               </View>
    
     
             ))
-}
-          </Text>
-        </View>
-        <></>
+:null}</View>
+
+{ toggleShare ?
+<View style={styles.shareBox}>
+  <>
+  <Text onPress={()=>setToggleShare(false)}>x</Text>
+  <Text>choose user to copy share with:</Text>
+  </>
+  {profileData?   
+  profileData.map(profile=>
+
+   <>
+ 
+    <Text onPress= {()=>{setRoom(profile.profileid); onCopyShare() }}>{profile.name}</Text>
+    <Text  onPress= {()=>{setRoom(profile.profileid); onCopyShare() }} style={{fontSize: 10,color:'green'}}>{profile.status}</Text>
+   </>
+ )
+    : null}
+  </View>
+:null}
+
       </ScrollView>
+      <View  style={styles.addButton}>
       <Text
-        style={styles.addButton}
+      
         onPress={() => setToggleOnAdd(!toggleOnAdd)}>
         Add Mushaf
       </Text>
-
+</View>
       {toggleOnAdd ? (
         <View style={styles.addMushaf} minimumValue={0} maximumValue={100}>
           <Text>Add title</Text>
@@ -323,26 +592,63 @@ const addMushafData = async () => {
             <View  key = {cover.id} >
             <TouchableOpacity onPress = {() =>setCover(cover.id)}>
               <View >
-              <Image style={{marginLeft:'9%' ,width:40 ,height:50,position:'relative',left: '60%'}}
+              <Image style={{marginLeft:'6%' ,width:40 ,height:50,position:'relative',left: '10%'}}
                 source={{uri:`asset:/cover${cover.id}.png`}}
-               
-                
-            />
+               />
+              
             </View>
+            
             </TouchableOpacity>
             </View>
           ))}</View>
-         
+          <Text style={{fontSize:10,marginTop:10}}>*A 99 names of Allah page may be shown when the main view is loading</Text>
          { currentUser
           ?
+          
           <>
+              <Text style={{fontSize:10,marginTop:10}}>*You should stay on a page for at least 3 seconds for your online current page to be synced.</Text>
           <Text style={{marginRight:10,marginTop:20,zIndex:999}} onPress={addMushafData}>Add offline copy</Text>
           <Text style={{marginTop:10,zIndex:999}} onPress={addOnlineMushafData}>Add online copy </Text>
           </>
           : <Text style={{marginTop:20,zIndex:999}} onPress={addMushafData}>Add</Text>
          }
+
+
         </View>
       ) : null}
+      { profileData?
+     
+               <View style={styles.profile}>
+                 {currentUser && toggleProfiles  && lastMessage?
+                 <Text style={{fontSize:9,}}> last message: {lastMessage} </Text>:null}
+                { toggleProfiles?<Text  style={{color:'#c2b280'}}onPress={() =>setToggleProfiles(!toggleProfiles)}>Profiles -</Text>
+                  : <Text style={{color:'#c2b280'}} onPress={() =>setToggleProfiles(!toggleProfiles)}>Profiles +</Text>}
+                  <Text>{profileNumber} users online</Text>
+                 <ScrollView>
+           {profileData ?
+           profileData.map(profile=>
+            toggleProfiles? <Profiles setRoom={setRoom} openMessage={openMessage} data={profile} setLastProfile ={setLastProfile}/> : null
+            )
+          :null}
+         </ScrollView></View>
+:null}
+
+{showMessage ?
+currentUser?
+<MessageBox setLastMessage = {setLastMessage} setName = {setName}setMessage={clearChat} initiateSocket = {initiateSocket}  disconnectSocket= {disconnectSocket}setRoom={setRoom} lastProfile={lastProfile} messages={message}  setShowMessage={setShowMessage} currentUser={currentUser[0]} setRoom={setRoom}/>
+
+: onNotSignedIn()
+:null
+}
+{showTargets?
+  <View style={styles.target}>
+    <Text  onPress={toggleTargets}>x</Text>
+    <Text>Add Prayer targets</Text>
+    <TextInput   keyboardType="numeric" placeholder ='How many pages do want to read' onChangeText={setTargetPages} />
+    <TextInput   keyboardType="numeric" placeholder ='How many minutes do you want to pray for' onChangeText={setTargetTime} />
+    <Text onPress={onSetTargets}>Add</Text>
+  </View>
+:null}
     </>
   );
 }
@@ -359,6 +665,14 @@ const mapDispatchToProps = dispatch => ({
   setCopiesPending: (copyData) => dispatch(setCopiesPending(copyData)),
   setLibraryType: (type) => dispatch(setLibraryType(type)),
   toggleTimer: () => dispatch(toggleTimer()),
+  setRoom: (room ) => dispatch(setRoom(room)),
+  setPagesRead: (pagesRead) => dispatch(setPagesRead(pagesRead)),
+  setTargets: (targets) => dispatch(setTargets(targets)),
+  setLastMessage: (message) => dispatch(setLastMessage(message)),
+  clearChat: () => dispatch(clearChat()),
+  setName: (name) => dispatch(setName(name)),
+  onShare :(bool) => dispatch(onShare(bool)),
+  setShareData: (shareData) => dispatch(setShareData(shareData))
 });
 
 const mapStateToProps = createStructuredSelector({
@@ -368,6 +682,15 @@ const mapStateToProps = createStructuredSelector({
   bookmarks: selectBookmarks,
   onlineCopies: selectOnlineMushafs,
   timer: selectTimer,
+  room: selectRoom,
+  pagesRead: selectPagesRead,
+  targets: selectTargets,
+  openProfile: selectOpenProfile,
+  message: selectMessage,
+  name: selectName,
+  lastMessage: selectLastMessage,
+  enterLibrary: selectLibrary,
+  stream: selectStream
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Library);
@@ -383,6 +706,14 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexWrap: 'wrap',
     alignItems: 'center'
+  },
+  container2: {
+    flexDirection: 'row',
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    position: 'relative', 
+    bottom:20
   },
   text: {
     color: 'white',
@@ -403,6 +734,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginLeft: 20,
     width: 100,
+    
   },
   image: {
     width: 85,
@@ -412,11 +744,12 @@ const styles = StyleSheet.create({
   },
   addMushaf: {
     color: 'black',
-    fontSize: 35,
+    fontSize: 22,
     position: 'absolute',
-    top: 50,
+    top: 55,
     borderRadius: 26,
-    padding: 67,
+    height: Dimensions.get('window').height/2,
+    width: Dimensions.get('window').width/1.2,
     alignItems: 'center',
     backgroundColor: 'white',
     shadowColor: 'black',
@@ -446,9 +779,71 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-end',
+    marginLeft:25,
+    fontSize:13
     
   },
   coverButton:{
      marginLeft:30,
+  },
+  profile:{
+    color: 'black',
+    fontSize: 10,
+    position: 'absolute',
+    bottom: 25,
+    width:110,
+    marginTop: 50,
+    padding: 6,
+    alignItems: 'center',
+    backgroundColor: 'white',
+    shadowColor: 'black',
+    right: 0,
+    zIndex: 999,
+    borderRadius:10
+  },
+
+  shareBox:{
+    color: 'black',
+    fontSize: 10,
+    position: 'absolute',
+    width:'50%',
+    marginTop: 50,
+    padding: 6,
+    marginLeft: 50,
+    alignItems: 'center',
+    backgroundColor: 'white',
+    shadowColor: 'black',
+    height: Dimensions.get('window').height/1.5,
+    zIndex: 999,
+    borderRadius:10
+  },
+
+    topmessage:{
+      position: 'absolute',
+      top:20,
+      backgroundColor: 'white',
+      padding: 6,
+      zIndex: 999,
+      borderRadius:25,
+      borderColor: '#e8d087',
+      borderWidth:  1,
+
+      marginLeft:6
+
+    },
+
+  target:{
+    color: 'black',
+    fontSize: 35,
+    position: 'absolute',
+    top: 50,
+    borderRadius: 26,
+    padding: 10,
+    alignItems: 'center',
+    backgroundColor: 'white',
+    shadowColor: 'black',
+    flex: 1,
+    marginLeft: 20,
+    marginRight: 20,
   }
 });

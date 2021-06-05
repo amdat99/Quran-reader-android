@@ -21,10 +21,10 @@ export function* addCopiesAsync({
     console.log( {payload: {  id,userId,title,page,cover,source,transformId }})
 
   try {
-    // const response = yield fetch(
-    //   "https://aamirproject-api.herokuapp.com/addmessages",
-    //   {
-        const response = yield fetch('http://192.168.11.177:3000/addcopy',{
+    const response = yield fetch(
+      "https://quranlive-api.herokuapp.com/addcopy",
+      {
+        // const response = yield fetch('http://192.168.11.177:3000/addcopy',{
         method: "post",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -52,10 +52,10 @@ export function* fetchCopiesAsync({payload:   contentid }) {
 
 
   try {
-    // const response = yield fetch(
-    //   "https://aamirproject-api.herokuapp.com/addmessages",
-    //   {
-        const response = yield fetch('http://192.168.11.177:3000/fetchcopies',{
+    const response = yield fetch(
+      "https://quranlive-api.herokuapp.com/fetchcopies",
+      {
+        // const response = yield fetch('http://192.168.11.177:3000/fetchcopies',{
         method: "post",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -80,10 +80,10 @@ export function* updateCopyAsync({
 
 
   try {
-    // const response = yield fetch(
-    //   "https://aamirproject-api.herokuapp.com/addmessages",
-    //   {
-        const response = yield fetch('http://192.168.11.177:3000/updatepage',{
+    const response = yield fetch(
+      "https://quranlive-api.herokuapp.com/updatepage",
+      {
+        // const response = yield fetch('http://192.168.11.177:3000/updatepage',{
         method: "put",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -109,10 +109,10 @@ export function* addBookmarksAsync({
     console.log( {payload: { id,page,bookmarkid,title,userId}})
 
   try {
-    // const response = yield fetch(
-    //   "https://aamirproject-api.herokuapp.com/addmessages",
-    //   {
-        const response = yield fetch('http://192.168.11.177:3000/addbookmark',{
+    const response = yield fetch(
+      "https://quranlive-api.herokuapp.com/addbookmark",
+      {
+        // const response = yield fetch('http://192.168.11.177:3000/addbookmark',{
         method: "post",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -141,10 +141,10 @@ export function* addNotesAsync({
     console.log( {payload: { id,page, noteId,title,userId,note }})
 
   try {
-    // const response = yield fetch(
-    //   "https://aamirproject-api.herokuapp.com/addmessages",
-    //   {
-        const response = yield fetch('http://192.168.11.177:3000/addnote',{
+    const response = yield fetch(
+      "https://quranlive-api.herokuapp.com/addnote",
+      {
+        // const response = yield fetch('http://192.168.11.177:3000/addnote',{
         method: "post",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
