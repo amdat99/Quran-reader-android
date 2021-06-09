@@ -91,6 +91,10 @@ function SocketOverlay({
         id: data.profile,
         name: data.name,
       });
+
+    
+
+      console.log('d',data.profile)
       setMessage({name: data.name, message: data.message});
       setName(data.name);
     });
@@ -185,3 +189,4 @@ const mapDispatchToProps = dispatch => ({
 });
 
 export default connect(mapStateTopProps, mapDispatchToProps)(SocketOverlay);
+

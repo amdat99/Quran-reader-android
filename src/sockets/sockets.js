@@ -28,9 +28,9 @@ export const enterChat = data => {
   });
 };
 
-export const sendMessage = (name, message, room) => {
+export const sendMessage = (name, message, room, profile) => {
   console.log('message sent');
-  if (socket) socket.emit('livemsg', {message, name, room});
+  if (socket) socket.emit('livemsg', {message, name, room,profile});
 };
 
 export const enterAudioLink = data => {

@@ -39,8 +39,8 @@ function MessageBox({
     if (!onMessage || !onName) {
       return;
     }
-    await sendMessage(onName, onMessage, lastProfile.id, lastProfile.id);
-    await sendMessage(onName, onMessage, currentUser.profileid, lastProfile.id);
+    await sendMessage(onName, onMessage, lastProfile.id, currentUser.profileid);
+    await sendMessage(onName, onMessage, currentUser.profileid,currentUser.profileid);
     await initiateSocket(currentUser.profileid);
   };
 
