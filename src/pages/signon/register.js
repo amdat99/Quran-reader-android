@@ -9,9 +9,17 @@ import {createStructuredSelector} from 'reselect';
 //   selectCurrentUser,
 // } from "../../redux/user/user.selectors";
 
-import {StyleSheet, Text, View, TextInput, Platform, Dimensions, Alert} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Platform,
+  Dimensions,
+  Alert,
+} from 'react-native';
 
-function Register({signUpPending,toggleLogin}) {
+function Register({signUpPending, toggleLogin}) {
   const [userName, setDisplayName] = useState(null);
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
@@ -49,13 +57,19 @@ function Register({signUpPending,toggleLogin}) {
       return;
     }
 
-    signUpPending({userName, email, password, userId: uuid.v4(), contentId: uuid.v4(), profileId: uuid.v4()});
-    toggleLogin()
+    signUpPending({
+      userName,
+      email,
+      password,
+      userId: uuid.v4(),
+      contentId: uuid.v4(),
+      profileId: uuid.v4(),
+    });
+    toggleLogin();
     // if(error !== null){
     //     alert(error)
     // }
   };
-
 
   return (
     <>
@@ -96,7 +110,7 @@ function Register({signUpPending,toggleLogin}) {
             {' '}
             Register
           </Text>
-             <Text
+          <Text
             style={{
               backgroundColor: '#4c8bf5',
               color: 'white',
@@ -121,8 +135,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 0,
     flexDirection: 'column',
-    height:Dimensions.get('window').
-    height/5
+    height: Dimensions.get('window').height / 5,
   },
   buttons: {
     flexDirection: 'row',

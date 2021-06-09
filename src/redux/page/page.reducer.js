@@ -17,28 +17,26 @@ const INITIAL_STATE = {
   currentBookmarks: [],
   pageNotes: [],
   currentNotes: [],
-  onlineNotes:[],
+  onlineNotes: [],
   onlineMushafs: [],
   error: null,
   pagesRead: 1,
   targets: [],
   openProfile: false,
-  enterLibrary: false
+  enterLibrary: false,
+  lastProfile: null,
 };
 
 const pageReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    
     case pageActionTypes.FETCH_BOOKMARKS_PENDING:
     case pageActionTypes.FETCH_COPIES_PENDING:
     case pageActionTypes.FETCH_NOTES_PENDING:
-    return{
-      ...state,
-      pending:true,
-      error:null
-    }
-
-
+      return {
+        ...state,
+        pending: true,
+        error: null,
+      };
 
     case pageActionTypes.SET_CURRENT_PAGE:
       return {
@@ -55,34 +53,34 @@ const pageReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         onlineMushafs: action.payload,
-      }
-        case pageActionTypes.FETCH_NOTES_SUCCESS:
-          return {
-            ...state,
-            onlineNotes: action.payload,
-          }
-        
+      };
+    case pageActionTypes.FETCH_NOTES_SUCCESS:
+      return {
+        ...state,
+        onlineNotes: action.payload,
+      };
+
     case pageActionTypes.SET_CURRENT_MUSHAF:
       return {
         ...state,
         currentMushaf: setCurrentMushaf(state.mushafs, action.payload),
       };
 
-      case pageActionTypes.SET_CURRENT_ONLINE_MUSHAF:
+    case pageActionTypes.SET_CURRENT_ONLINE_MUSHAF:
       return {
         ...state,
         currentMushaf: setCurrentMushaf(state.onlineMushafs, action.payload),
       };
-      case pageActionTypes.SET_CURRENT_SHARE_MUSHAF:
-        return {
+    case pageActionTypes.SET_CURRENT_SHARE_MUSHAF:
+      return {
         ...state,
-        currentMushaf: action.payload
-        };
-        case pageActionTypes.SET_CURRRENT_ONLINE_NOTES:
-        return {
-          ...state,
-          currentMushaf: setPageNotes(state.onlineNotes, action.payload),
-        };
+        currentMushaf: action.payload,
+      };
+    case pageActionTypes.SET_CURRRENT_ONLINE_NOTES:
+      return {
+        ...state,
+        currentMushaf: setPageNotes(state.onlineNotes, action.payload),
+      };
     case pageActionTypes.SET_MUSHAFS:
       return {
         ...state,
@@ -93,17 +91,17 @@ const pageReducer = (state = INITIAL_STATE, action) => {
         ...state,
         currentMushaf: action.payload,
       };
-      case pageActionTypes.SET_BOOKMARKS:
-        return {
-          ...state,
-          bookmarks: action.payload,
-        };
+    case pageActionTypes.SET_BOOKMARKS:
+      return {
+        ...state,
+        bookmarks: action.payload,
+      };
 
-        case pageActionTypes.SET_DELETE_NOTES:
-          return {
-            ...state,
-            pageNotes: action.payload,
-          };
+    case pageActionTypes.SET_DELETE_NOTES:
+      return {
+        ...state,
+        pageNotes: action.payload,
+      };
 
     case pageActionTypes.ADD_BOOKMARK:
       return {
@@ -134,22 +132,27 @@ const pageReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         pagesRead: action.payload,
-      }
-      case pageActionTypes.SET_TARGETS:
-        return {
-          ...state,
-          targets: action.payload,
-        }
-      case pageActionTypes.OPEN_PROFILE:
-        return {
-          ...state,
-          openProfile: !state.openProfile
-        }
-      case pageActionTypes.ENTER_LIBRARY:
-        return {
-          ...state,
-          enterLibrary: !state.enterLibrary
-        }
+      };
+    case pageActionTypes.SET_TARGETS:
+      return {
+        ...state,
+        targets: action.payload,
+      };
+    case pageActionTypes.OPEN_PROFILE:
+      return {
+        ...state,
+        openProfile: !state.openProfile,
+      };
+    case pageActionTypes.ENTER_LIBRARY:
+      return {
+        ...state,
+        enterLibrary: !state.enterLibrary,
+      };
+    case pageActionTypes.LAST_PROFILE:
+      return {
+        ...state,
+        lastProfile: action.payload,
+      };
     case pageActionTypes.CLEAR_CURRENT_STATE:
       return {
         ...state,
@@ -165,9 +168,9 @@ const pageReducer = (state = INITIAL_STATE, action) => {
     case pageActionTypes.SET_COPIES_FAILED:
     case pageActionTypes.SET_NOTES_FAILED:
       return {
-        error:action.payload,
-        pending:false,
-      }
+        error: action.payload,
+        pending: false,
+      };
 
     default:
       return state;

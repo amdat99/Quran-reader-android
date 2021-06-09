@@ -1,11 +1,7 @@
 import userActionTypes from './user.types';
-import {mapUserData} from './user.utils'
+import {mapUserData} from './user.utils';
 
-import {
-  addBookmark,
-
-} from '../page/page.utils';
-
+import {addBookmark} from '../page/page.utils';
 
 const INITIAL_STATE = {
   pending: false,
@@ -17,14 +13,16 @@ const INITIAL_STATE = {
   profileName: null,
   libraryType: false,
   timerStart: false,
-  time:null,
-  room:123,
-  message:[],
+  time: null,
+  room: 123,
+  message: [],
   lastMessage: null,
-  name:null,
-  stream:null,
-  onShare:null,
-  shareData:null,
+  name: null,
+  stream: null,
+  onShare: null,
+  shareData: null,
+  openMessage: false,
+  lastProfile: null,
 };
 const userReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -51,7 +49,7 @@ const userReducer = (state = INITIAL_STATE, action) => {
         error: null,
       };
     case userActionTypes.SIGNOUT_SUCCESS:
-    case    userActionTypes.SIGNOUT_PENDING:
+    case userActionTypes.SIGNOUT_PENDING:
       return {
         ...state,
         currentUser: null,
@@ -85,58 +83,73 @@ const userReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         libraryType: action.payload,
-      }
-      case userActionTypes.TOGGLE_TIMER:
-        return {
-          ...state,
-          timerStart: !state.timerStart
-        }
-      
+      };
+    case userActionTypes.TOGGLE_TIMER:
+      return {
+        ...state,
+        timerStart: !state.timerStart,
+      };
+
     case userActionTypes.SET_TIME:
       return {
         ...state,
-        time:action.payload,
-      }
+        time: action.payload,
+      };
     case userActionTypes.ROOM:
       return {
         ...state,
-        room: action.payload
-      }
+        room: action.payload,
+      };
     case userActionTypes.LAST_MESSAGE:
       return {
         ...state,
-        lastMessage: action.payload
-      }
-      case userActionTypes.MESSAGE:
-        return {
-          ...state,
-          message: addBookmark(state.message, action.payload)
-        }
-      case userActionTypes.NAME:
-        return {
-          ...state,
-          name: action.payload
-        }
-      case userActionTypes.CLEAR_CHAT:
-        return {
-          ...state,
-          message: []
-        }
-      case userActionTypes.STREAM:
-        return {
-          ...state,
-          stream: action.payload
-        }
-      case userActionTypes.ONSHARE:
-        return {
-          ...state,
-          onShare: action.payload
-        }
-      case userActionTypes.SET_SHARE_DATA:
-        return {
-          ...state,
-          shareData: action.payload
-        }
+        lastMessage: action.payload,
+      };
+    case userActionTypes.MESSAGE:
+      return {
+        ...state,
+        message: addBookmark(state.message, action.payload),
+      };
+    case userActionTypes.NAME:
+      return {
+        ...state,
+        name: action.payload,
+      };
+    case userActionTypes.CLEAR_CHAT:
+      return {
+        ...state,
+        message: [],
+      };
+    case userActionTypes.STREAM:
+      return {
+        ...state,
+        stream: action.payload,
+      };
+    case userActionTypes.ONSHARE:
+      return {
+        ...state,
+        onShare: action.payload,
+      };
+    case userActionTypes.SET_SHARE_DATA:
+      return {
+        ...state,
+        shareData: action.payload,
+      };
+    case userActionTypes.SET_LAST_PROFILE:
+      return {
+        ...state,
+        lastProfile: action.payload,
+      };
+    case userActionTypes.OPEN_MESSAGE:
+      return {
+        ...state,
+        openMessage: true,
+      };
+    case userActionTypes.CLOSE_MESSAGE:
+      return {
+        ...state,
+        openMessage: false,
+      };
     case userActionTypes.SIGNIN_FAILED:
     case userActionTypes.SIGNOUT_FAILED:
     case userActionTypes.SIGN_UP_FAILURE:

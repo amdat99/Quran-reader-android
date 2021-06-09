@@ -41,7 +41,7 @@ const pageActionTypes = {
   OPEN_PROFILE: 'OPEN_PROFILE',
   ENTER_LIBRARY: 'ENTER_LIBRARY',
   SET_CURRENT_SHARE_MUSHAF: 'SET_CURRENT_SHARE_MUSHAF',
-
+  LAST_PROFILE: 'LAST_PROFILE',
 };
 
 export default pageActionTypes;

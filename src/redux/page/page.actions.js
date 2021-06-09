@@ -1,3 +1,4 @@
+import {exp} from 'react-native/Libraries/Animated/Easing';
 import pageActionTypes from './page.types';
 
 export const setCurrentPage = pageData => ({
@@ -28,13 +29,12 @@ export const setMushafs = mushafData => ({
 export const setBookmarks = boomarkData => ({
   type: pageActionTypes.SET_BOOKMARKS,
   payload: boomarkData,
-})
-
+});
 
 export const setNotes = noteData => ({
   type: pageActionTypes.SET_DELETE_NOTES,
   payload: noteData,
-})
+});
 
 export const setCurrentMushafPage = mushafData => ({
   type: pageActionTypes.SET_CURRENT_MUSHAF_PAGE,
@@ -70,116 +70,118 @@ export const clearCurrentState = () => ({
   type: pageActionTypes.CLEAR_CURRENT_STATE,
 });
 
-export const fetchCopiesPending = (userid) => ({
+export const fetchCopiesPending = userid => ({
   type: pageActionTypes.FETCH_COPIES_PENDING,
   payload: userid,
-})
+});
 
-export const fetchCopiesSuccess = (copyData) => ({
+export const fetchCopiesSuccess = copyData => ({
   type: pageActionTypes.FETCH_COPIES_SUCCESS,
-  payload: copyData
-})
+  payload: copyData,
+});
 
-export const fetchCopiesFailed = (e) => ({
+export const fetchCopiesFailed = e => ({
   type: pageActionTypes.FETCH_COPIES_FAILED,
-  payload: e
-})
+  payload: e,
+});
 
-
-
-export const setCopiesPending = (copyData) => ({
+export const setCopiesPending = copyData => ({
   type: pageActionTypes.SET_COPIES_PENDING,
-  payload: copyData
-})
+  payload: copyData,
+});
 
-export const setCopiesSuccess = (copyData) => ({
+export const setCopiesSuccess = copyData => ({
   type: pageActionTypes.SET_COPIES_SUCCESS,
-  payload: copyData
-})
+  payload: copyData,
+});
 
-export const setCopiesFailed = (e) => ({
+export const setCopiesFailed = e => ({
   type: pageActionTypes.SET_COPIES_FAILED,
-  payload: e
-})
-export const setCurrentOnlineMushaf = (mushafId) => ({
+  payload: e,
+});
+export const setCurrentOnlineMushaf = mushafId => ({
   type: pageActionTypes.SET_CURRENT_ONLINE_MUSHAF,
-  payload: mushafId
-})
+  payload: mushafId,
+});
 
-export const setCurrentOnlineBookmark = (boomarkData) => ({
+export const setCurrentOnlineBookmark = boomarkData => ({
   type: pageActionTypes.SET_CURRENT_ONLINE_BOOKMARKS,
-  payload: boomarkData
-})
+  payload: boomarkData,
+});
 
-export const setCurrentOnlineNote = (noteData) => ({
+export const setCurrentOnlineNote = noteData => ({
   type: pageActionTypes.SET_CURRENT_ONLINE_NOTES,
-  payload: noteData
-})
+  payload: noteData,
+});
 
-export const updateCopyPending = (mushafData) => ({
+export const updateCopyPending = mushafData => ({
   type: pageActionTypes.UPDATE_COPY_PENDING,
-  payload: mushafData
-}) 
+  payload: mushafData,
+});
 
-export const updateCopySuccess = (copyData)=> ({
+export const updateCopySuccess = copyData => ({
   type: pageActionTypes.UPDATE_COPY_SUCCESS,
-  payload: copyData
-})
+  payload: copyData,
+});
 
-export const updateCopyFailure = (e)=> ({
+export const updateCopyFailure = e => ({
   type: pageActionTypes.UPDATE_COPY_FAILED,
-  payload: e
-})
+  payload: e,
+});
 
-export const setBookmarkPending = (boomarkData) => ({
+export const setBookmarkPending = boomarkData => ({
   type: pageActionTypes.SET_BOOKMARK_PENDING,
-  payload: boomarkData
-})
+  payload: boomarkData,
+});
 
-export const setBookmarkSuccess = (data) => ({
+export const setBookmarkSuccess = data => ({
   type: pageActionTypes.SET_BOOKMARK_SUCCESS,
-  payload: data
-})
+  payload: data,
+});
 
-export const setBookmarkFailure = (e) => ({
+export const setBookmarkFailure = e => ({
   type: pageActionTypes.SET_BOOKMARK_FAILED,
-  payload: e
-})
+  payload: e,
+});
 
-
-export const setNotePending = (noteData) => ({
+export const setNotePending = noteData => ({
   type: pageActionTypes.SET_NOTE_PENDING,
-  payload: noteData
-})
+  payload: noteData,
+});
 
-export const setNoteSuccess = (data) => ({
+export const setNoteSuccess = data => ({
   type: pageActionTypes.SET_NOTE_SUCCESS,
-  payload: data
-})
+  payload: data,
+});
 
-export const setNoteFailure = (e) => ({
+export const setNoteFailure = e => ({
   type: pageActionTypes.SET_NOTE_FAILED,
-  payload: e
-})
+  payload: e,
+});
 
-export const setPagesRead = (pages) =>({
+export const setPagesRead = pages => ({
   type: pageActionTypes.SET_PAGES_READ,
-  payload: pages
-})
+  payload: pages,
+});
 
-export const setTargets = (targets) => ({
+export const setTargets = targets => ({
   type: pageActionTypes.SET_TARGETS,
-  payload: targets
-})
+  payload: targets,
+});
 
 export const setOpenProfile = () => ({
-  type: pageActionTypes.OPEN_PROFILE
-})
+  type: pageActionTypes.OPEN_PROFILE,
+});
 
 export const enterLibrary = () => ({
-  type: pageActionTypes.ENTER_LIBRARY
-})
-export const setCurrentShareMushaf = (mushafData) => ({
+  type: pageActionTypes.ENTER_LIBRARY,
+});
+export const setCurrentShareMushaf = mushafData => ({
   type: pageActionTypes.SET_CURRENT_SHARE_MUSHAF,
-  payload: mushafData
-})
+  payload: mushafData,
+});
+
+export const setLastProfile = data => ({
+  type: pageActionTypes.LAST_PROFILE,
+  payload: data,
+});

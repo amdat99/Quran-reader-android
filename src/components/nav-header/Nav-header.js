@@ -18,10 +18,14 @@ import {
   selectBookmarks,
   selectCurrentBookmarks,
   selectCurrentNotes,
-  selectNotes
+  selectNotes,
 } from '../../redux/page/page.selectors';
 
-import {selectLibrary,selectCurrentUser, selectOBookmarks} from '../../redux/user/user.selectors'
+import {
+  selectLibrary,
+  selectCurrentUser,
+  selectOBookmarks,
+} from '../../redux/user/user.selectors';
 import {
   addBookmark,
   addPageNote,
@@ -32,11 +36,19 @@ import {
   fetchBookmarksPending,
   setNotePending,
   setBookmarks,
-  setNotes
+  setNotes,
 } from '../../redux/page/page.actions';
 
 import uuid from 'react-native-uuid';
-import {juz, surahs, fetchBookmarksAsync,fetchNotesAsync, fetchAllNotesAsync, deleteBookmarkAsync, deleteNoteAsync} from './utils';
+import {
+  juz,
+  surahs,
+  fetchBookmarksAsync,
+  fetchNotesAsync,
+  fetchAllNotesAsync,
+  deleteBookmarkAsync,
+  deleteNoteAsync,
+} from './utils';
 function NavHeader({
   setPage,
   toggleJuz,
@@ -67,7 +79,7 @@ function NavHeader({
   setNotes,
   numberOfPages,
   onNote,
-  onBookmark
+  onBookmark,
 }) {
   const [onJuz, setOnJuz] = useState(false);
   const [bTitle, setBTitle] = useState('');
@@ -77,70 +89,73 @@ function NavHeader({
   const [page, onPage] = useState(null);
   const [onlineBookmarks, setOnlineBookmarks] = useState(null);
   const [onlineNotes, setOnlineNotes] = useState(null);
-  const [onDelete,setOnDelete] = useState(false);
+  const [onDelete, setOnDelete] = useState(false);
 
-  useEffect(() => { 
-    libraryType
-    ? 
-     null
-    
-    :setCurrentBookmarks(mushaf);
+  useEffect(() => {
+    libraryType ? null : setCurrentBookmarks(mushaf);
     setCurrentPageNotes(mushaf);
   }, []);
 
-
-  useEffect(()=>{
-    if(currentUser && libraryType){
-      fetchBookmarksAsync(mushaf.id,currentUser[0].contentid).then(data=>setOnlineBookmarks(data))
+  useEffect(() => {
+    if (currentUser && libraryType) {
+      fetchBookmarksAsync(mushaf.id, currentUser[0].contentid).then(data =>
+        setOnlineBookmarks(data),
+      );
     }
-  },[currentUser])
+  }, [currentUser]);
 
-  const fetchOnlineNotes = () =>{
-    if(currentUser && libraryType){
-      fetchNotesAsync(mushaf.id,currentUser[0].contentid,mushaf.page).then(data=>setOnlineNotes(data))
+  const fetchOnlineNotes = () => {
+    if (currentUser && libraryType) {
+      fetchNotesAsync(
+        mushaf.id,
+        currentUser[0].contentid,
+        mushaf.page,
+      ).then(data => setOnlineNotes(data));
     }
-  }
-  
+  };
 
-  const deleteBookmark = (deletion) => {
-   
-    if(libraryType){
-    deleteBookmarkAsync(deletion.bookmarkid)
-    if(currentUser && libraryType){
-      setTimeout(function(){
-      fetchBookmarksAsync(mushaf.id,currentUser[0].contentid).then(data=>setOnlineBookmarks(data))
-    }, 500)
-    }
-    } 
-    
-    else {
-    let  currentBookmarks = storedBookmarks.filter(boomark => boomark.bookmarkId !== deletion.bookmarkId)
-    setBookmarks(currentBookmarks)
-    setCurrentBookmarks(mushaf)
-    }
-    
-    setOnDelete(false);
-  }
-
-  const deleteNotes = (deletion) => {
-
-    if(libraryType){
-      deleteNoteAsync(deletion.noteid)
-      
-      if(currentUser && libraryType){
-  
-       setTimeout(function(){
-        fetchAllNotesAsync(mushaf.id,currentUser[0].contentid).then(data=>setOnlineNotes(data))}, 500);
+  const deleteBookmark = deletion => {
+    if (libraryType) {
+      deleteBookmarkAsync(deletion.bookmarkid);
+      if (currentUser && libraryType) {
+        setTimeout(function () {
+          fetchBookmarksAsync(mushaf.id, currentUser[0].contentid).then(data =>
+            setOnlineBookmarks(data),
+          );
+        }, 500);
       }
-    }else{
-
-    let  currentNotes = storedNotes.filter(note => note.noteId !== deletion.noteId)
-     setNotes(currentNotes)
-    setCurrentPageNotes(mushaf);
+    } else {
+      let currentBookmarks = storedBookmarks.filter(
+        boomark => boomark.bookmarkId !== deletion.bookmarkId,
+      );
+      setBookmarks(currentBookmarks);
+      setCurrentBookmarks(mushaf);
     }
-     setOnDelete(false);
-   }
-  
+
+    setOnDelete(false);
+  };
+
+  const deleteNotes = deletion => {
+    if (libraryType) {
+      deleteNoteAsync(deletion.noteid);
+
+      if (currentUser && libraryType) {
+        setTimeout(function () {
+          fetchAllNotesAsync(mushaf.id, currentUser[0].contentid).then(data =>
+            setOnlineNotes(data),
+          );
+        }, 500);
+      }
+    } else {
+      let currentNotes = storedNotes.filter(
+        note => note.noteId !== deletion.noteId,
+      );
+      setNotes(currentNotes);
+      setCurrentPageNotes(mushaf);
+    }
+    setOnDelete(false);
+  };
+
   const setPageInput = () => {
     if (!page) {
       return;
@@ -155,66 +170,78 @@ function NavHeader({
     if (!bTitle) {
       return;
     }
-if(libraryType){
-  setBookmarkPending({id:mushaf.id,page:mushaf.page,bookmarkid:uuid.v4(),title:bTitle,userId: currentUser[0].contentid})
-  if(currentUser && libraryType){
-    fetchBookmarksAsync(mushaf.id,currentUser[0].contentid).then(data=>setOnlineBookmarks(data))
-  }
-}
-else{
-    addBookmark({
-      id: mushaf.id,
-      page: mushaf.page,
-      bookmarkId: uuid.v4(),
-      title: bTitle,
-    })
-  }
+    if (libraryType) {
+      setBookmarkPending({
+        id: mushaf.id,
+        page: mushaf.page,
+        bookmarkid: uuid.v4(),
+        title: bTitle,
+        userId: currentUser[0].contentid,
+      });
+      if (currentUser && libraryType) {
+        fetchBookmarksAsync(mushaf.id, currentUser[0].contentid).then(data =>
+          setOnlineBookmarks(data),
+        );
+      }
+    } else {
+      addBookmark({
+        id: mushaf.id,
+        page: mushaf.page,
+        bookmarkId: uuid.v4(),
+        title: bTitle,
+      });
+    }
     setBTitle('');
     setCurrentBookmarks(mushaf);
-    onBookmark()
+    onBookmark();
   };
 
-  
   const setAllNotes = () => {
-
-    if(libraryType){
-      if(currentUser && libraryType){
-        fetchAllNotesAsync(mushaf.id,currentUser[0].contentid).then(data=>setOnlineNotes(data))
+    if (libraryType) {
+      if (currentUser && libraryType) {
+        fetchAllNotesAsync(mushaf.id, currentUser[0].contentid).then(data =>
+          setOnlineNotes(data),
+        );
       }
-    }else{
-    setUserNotes(mushaf);
-    }}
+    } else {
+      setUserNotes(mushaf);
+    }
+  };
 
-
- 
   const addPageNoteData = mushaf => {
-
-    if(!note||note.id){
-      return
+    if (!note || note.id) {
+      return;
     }
 
-    if(libraryType){
-      setNotePending({id:mushaf.id,page:mushaf.page,noteId:uuid.v4(),title:noteTitle,userId: currentUser[0].contentid,note:note})
-      if(currentUser && libraryType){
-        fetchNotesAsync(mushaf.id,currentUser[0].contentid,mushaf.page).then(data=>setOnlineNotes(data))
+    if (libraryType) {
+      setNotePending({
+        id: mushaf.id,
+        page: mushaf.page,
+        noteId: uuid.v4(),
+        title: noteTitle,
+        userId: currentUser[0].contentid,
+        note: note,
+      });
+      if (currentUser && libraryType) {
+        fetchNotesAsync(
+          mushaf.id,
+          currentUser[0].contentid,
+          mushaf.page,
+        ).then(data => setOnlineNotes(data));
       }
-
+    } else {
+      addPageNote({
+        id: mushaf.id,
+        page: mushaf.page,
+        noteId: uuid.v4(),
+        title: noteTitle,
+        note: note,
+      });
+      setCurrentPageNotes(mushaf);
     }
-    else{
-
-    addPageNote({
-      id: mushaf.id,
-      page: mushaf.page,
-      noteId: uuid.v4(),
-      title: noteTitle,
-      note: note,
-    });
-    setCurrentPageNotes(mushaf);
-  }
     setNoteTitle('');
     setNote('');
-    onNote()
-    
+    onNote();
   };
 
   const onSetPage = page => {
@@ -225,59 +252,65 @@ else{
   };
 
   const filteredSurahs = () => {
-    return surahs.filter((surah) => {
+    return surahs.filter(surah => {
       return surah.name.toLowerCase().includes(surahField.toLowerCase());
     });
   };
 
-
-
   return (
     <>
       <View style={styles.container}>
-        {toggleJuz ? (    
-        <>
-        <Text style={styles.closePage} onPress={closePage}>
+        {toggleJuz ? (
+          <>
+            <Text style={styles.closePage} onPress={closePage}>
               X
             </Text>
-          <ScrollView style={styles.juz}>
-        
-
-            {juz.map((page, i) => (
-              <>
-                <Text key={i} onPress={() => onSetPage(page.page)}>
-                  {page.juz}
-                </Text>
-              </>
-            ))}
-          </ScrollView>
+            <ScrollView style={styles.juz}>
+              {juz.map((page, i) => (
+                <>
+                  <Text key={i} onPress={() => onSetPage(page.page)}>
+                    {page.juz}
+                  </Text>
+                </>
+              ))}
+            </ScrollView>
           </>
         ) : null}
 
-{toggleSurah ? (   
-  <>
-<Text style={styles.closePage} onPress={closePage}>
+        {toggleSurah ? (
+          <>
+            <Text style={styles.closePage} onPress={closePage}>
               X
             </Text>
-          <ScrollView style={styles.juz}>
-         
-              <TextInput style={{color:'#c2b280ya'}} placeholder='search surah' onChangeText={setSurahField}/>
-            {filteredSurahs().map((surah, i) => (
-              <>
-                <Text key={surah.name} onPress={() => onSetPage(surah.pageGreen)}>
-                  {surah.num}:{surah.name}
-                </Text>
-              </>
-            ))}
-          </ScrollView>
+            <ScrollView style={styles.juz}>
+              <TextInput
+                style={{color: '#c2b280ya'}}
+                placeholder="search surah"
+                onChangeText={setSurahField}
+              />
+              {filteredSurahs().map((surah, i) => (
+                <>
+                  <Text
+                    key={surah.name}
+                    onPress={() => onSetPage(surah.pageGreen)}>
+                    {surah.num}:{surah.name}
+                  </Text>
+                </>
+              ))}
+            </ScrollView>
           </>
         ) : null}
 
         {togglePage ? (
           <ScrollView style={styles.juzPage}>
-            <Text  style = {{color: 'red',marginLeft:  Dimensions.get('window').width / 5}}onPress={closePage}>
+            <Text
+              style={{
+                color: 'red',
+                marginLeft: Dimensions.get('window').width / 5,
+              }}
+              onPress={closePage}>
               X
-            </Text>   
+            </Text>
             <Text>total pages: {numberOfPages}</Text>
             <TextInput
               onSubmitEditing={setPageInput}
@@ -285,133 +318,150 @@ else{
               onChangeText={onPage}
               placeholder={`type page`}
             />
-         
+
             <Text onPress={setPageInput}>enter </Text>
           </ScrollView>
         ) : null}
 
         {toggleAddBookmark ? (
           <View style={styles.addBookmark}>
-            <Text style={{color: '#c2b280',marginLeft:5}}>Add Bookmark</Text>
+            <Text style={{color: '#c2b280', marginLeft: 5}}>Add Bookmark</Text>
             <TextInput
               onSubmitEditing={() => addBookmarkData(mushaf)}
               onChangeText={setBTitle}
               placeholder="bookmark title"
             />
-            <Text style ={{marginLeft: 5}} onPress={() => addBookmarkData(mushaf)}>enter </Text>
+            <Text
+              style={{marginLeft: 5}}
+              onPress={() => addBookmarkData(mushaf)}>
+              enter{' '}
+            </Text>
           </View>
         ) : null}
 
         {toggleBookmarks ? (
           <ScrollView style={styles.bookmark}>
             <Text style={{color: '#c2b280'}}>Bookmarks</Text>
-            {libraryType?
-          
-            onlineBookmarks?
-            onlineBookmarks.map((bookmark, i) => (
-              <>
-                <Text
-                  key={bookmark.bookmarkid} onLongPress ={() => setOnDelete(!onDelete)}
-                  onPress={() => onSetPage(bookmark.page)}>
-                  page:{bookmark.page} {bookmark.title} ({bookmark.date.slice(0, 10)})
-                </Text>
-                { onDelete?
-                <Text key={i} style={{color:'red'}} onPress={()=>deleteBookmark(bookmark)}>Delete</Text>
-               : null} 
-              </>
-            ))
-              : null
-             
-            :bookmarks?
-            bookmarks.map((bookmark, i) => (
-              <>
-                <Text
-                  key={bookmark.bookmarkId}
-                  onPress={() => onSetPage(bookmark.page)} onLongPress ={() => setOnDelete(!onDelete)}>
-                  page:{bookmark.page} {bookmark.title}
-                  
-                </Text>
-                { onDelete?
-                <Text key={i} style={{color:'red'}} onPress={()=>deleteBookmark(bookmark)}>Delete</Text>
-               : null} 
-              </>
-            ))
-              : null
-        }
+            {libraryType
+              ? onlineBookmarks
+                ? onlineBookmarks.map((bookmark, i) => (
+                    <>
+                      <Text
+                        key={bookmark.bookmarkid}
+                        onLongPress={() => setOnDelete(!onDelete)}
+                        onPress={() => onSetPage(bookmark.page)}>
+                        page:{bookmark.page} {bookmark.title} (
+                        {bookmark.date.slice(0, 10)})
+                      </Text>
+                      {onDelete ? (
+                        <Text
+                          key={i}
+                          style={{color: 'red'}}
+                          onPress={() => deleteBookmark(bookmark)}>
+                          Delete
+                        </Text>
+                      ) : null}
+                    </>
+                  ))
+                : null
+              : bookmarks
+              ? bookmarks.map((bookmark, i) => (
+                  <>
+                    <Text
+                      key={bookmark.bookmarkId}
+                      onPress={() => onSetPage(bookmark.page)}
+                      onLongPress={() => setOnDelete(!onDelete)}>
+                      page:{bookmark.page} {bookmark.title}
+                    </Text>
+                    {onDelete ? (
+                      <Text
+                        key={i}
+                        style={{color: 'red'}}
+                        onPress={() => deleteBookmark(bookmark)}>
+                        Delete
+                      </Text>
+                    ) : null}
+                  </>
+                ))
+              : null}
           </ScrollView>
         ) : null}
 
         {togglePageNotes ? (
           <ScrollView style={styles.bookmark}>
             <View style={styles.notelinks}>
-            <Text style={{color: '#c2b280',}} >notes</Text>
-            <Text style={{ marginLeft:10}} onPress={setAllNotes}>All notes</Text>
-            {libraryType?
-            <Text style={{ marginLeft:10}} onPress={fetchOnlineNotes}>Page Notes</Text>
-          
-        : null}  
-        </View>
-            { libraryType
+              <Text style={{color: '#c2b280'}}>notes</Text>
+              <Text style={{marginLeft: 10}} onPress={setAllNotes}>
+                All notes
+              </Text>
+              {libraryType ? (
+                <Text style={{marginLeft: 10}} onPress={fetchOnlineNotes}>
+                  Page Notes
+                </Text>
+              ) : null}
+            </View>
+            {libraryType
+              ? onlineNotes
+                ? onlineNotes.map((note, i) => (
+                    <>
+                      <Text
+                        key={note.noteId}
+                        onLongPress={() => setOnDelete(!onDelete)}>
+                        {note.title}: {note.note}
+                      </Text>
+                      <Text onPress={() => onSetPage(note.page)}>
+                        (page:{note.page}) ({note.date.slice(0, 10)})
+                      </Text>
 
-           
-
-    
-    ?   
-    onlineNotes?
-    onlineNotes.map((note, i) => (
-    <>
-      <Text key={note.noteId} onLongPress ={() => setOnDelete(!onDelete)}>
-        {note.title}: {note.note}
-      </Text>
-      <Text onPress={() => onSetPage(note.page)}>
-        (page:{note.page}) ({note.date.slice(0, 10)})
-      </Text>
-
-      { onDelete?
-                <Text key={i} style={{color:'red'}} onPress={()=>deleteNotes(note)}>Delete</Text>
-               : null}
-      <Text
-        style={{
-          width: Dimensions.get('window').width / 3,
-          color: '#c2b280',
-        }}>
-        ----------------------
-      </Text>
-    </>
-  ))
-: null
-            
-            
-          :notes ?
-          notes.map((note, i) => (
+                      {onDelete ? (
+                        <Text
+                          key={i}
+                          style={{color: 'red'}}
+                          onPress={() => deleteNotes(note)}>
+                          Delete
+                        </Text>
+                      ) : null}
+                      <Text
+                        style={{
+                          width: Dimensions.get('window').width / 3,
+                          color: '#c2b280',
+                        }}>
+                        ----------------------
+                      </Text>
+                    </>
+                  ))
+                : null
+              : notes
+              ? notes.map((note, i) => (
                   <>
-                    <Text key={note.noteId} onLongPress ={() => setOnDelete(!onDelete)}>
+                    <Text
+                      key={note.noteId}
+                      onLongPress={() => setOnDelete(!onDelete)}>
                       {note.title}: {note.note}
                     </Text>
                     <Text onPress={() => onSetPage(note.page)}>
                       (page:{note.page})
                     </Text>
-                    { onDelete?
-                <Text key={i} style={{color:'red'}} onPress={()=>deleteNotes(note)}>Delete</Text>
-               : null} 
+                    {onDelete ? (
+                      <Text
+                        key={i}
+                        style={{color: 'red'}}
+                        onPress={() => deleteNotes(note)}>
+                        Delete
+                      </Text>
+                    ) : null}
                     <Text
-                    
                       style={{
                         width: Dimensions.get('window').width / 3,
                         color: '#c2b280',
                       }}>
                       ----------------------
                     </Text>
-
-                  
                   </>
                 ))
-            : null
-                      
-            }
+              : null}
           </ScrollView>
-        ) : null
-      }
+        ) : null}
 
         {toggleAddPageNotes ? (
           <View style={styles.addNote}>
@@ -447,18 +497,17 @@ const styles = StyleSheet.create({
   container: {
     position: 'absolute',
     top: 10,
-    
-    borderRadius:10,
+
+    borderRadius: 10,
     flexDirection: 'row',
     justifyContent: 'flex-start',
 
     flex: 1,
-
   },
 
   juzPage: {
     maxHeight: Dimensions.get('window').height / 4,
-    borderRadius:10,
+    borderRadius: 10,
     position: 'relative',
     fontSize: 28,
     marginLeft: 20,
@@ -475,7 +524,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     maxWidth: 110,
     padding: 2,
-    borderRadius:10,
+    borderRadius: 10,
   },
   addBookmark: {
     marginLeft: 50,
@@ -483,7 +532,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width / 2,
     backgroundColor: 'white',
     padding: 2,
-    borderRadius:10,
+    borderRadius: 10,
   },
   addNote: {
     marginLeft: 20,
@@ -493,7 +542,7 @@ const styles = StyleSheet.create({
     padding: 2,
     marginBottom: Dimensions.get('window').height / 12,
     marginRight: 10,
-    borderRadius:10,
+    borderRadius: 10,
   },
 
   bookmark: {
@@ -505,14 +554,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     width: 100,
     marginRight: 20,
-    borderRadius:10,
+    borderRadius: 10,
   },
   closePage: {
     marginLeft: 100,
-    top:-5,
+    top: -5,
     position: 'absolute',
-    zIndex:999,
-    color: 'red'
+    zIndex: 999,
+    color: 'red',
   },
   noteInput: {
     maxWidth: Dimensions.get('window').width / 1.8,
@@ -520,11 +569,11 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   notelinks: {
-    flex:1,
+    flex: 1,
     flexDirection: 'row',
     fontSize: 10,
-    borderRadius:10,
-  }
+    borderRadius: 10,
+  },
 });
 
 const mapsStateToProps = createStructuredSelector({
@@ -533,8 +582,7 @@ const mapsStateToProps = createStructuredSelector({
   libraryType: selectLibrary,
   currentUser: selectCurrentUser,
   storedBookmarks: selectBookmarks,
-  storedNotes: selectNotes
-
+  storedNotes: selectNotes,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -543,10 +591,11 @@ const mapDispatchToProps = dispatch => ({
   setCurrentBookmarks: mushafData => dispatch(setCurrentBookmarks(mushafData)),
   setCurrentPageNotes: mushafData => dispatch(setCurrentPageNotes(mushafData)),
   setUserNotes: mushafData => dispatch(setUserNotes(mushafData)),
-  setBookmarkPending: bookmarkData => dispatch(setBookmarkPending(bookmarkData)),
+  setBookmarkPending: bookmarkData =>
+    dispatch(setBookmarkPending(bookmarkData)),
   setNotePending: noteData => dispatch(setNotePending(noteData)),
-  setBookmarks: (bookmarkData) => dispatch(setBookmarks(bookmarkData)),
-  setNotes: (noteData) => dispatch(setNotes(noteData))
+  setBookmarks: bookmarkData => dispatch(setBookmarks(bookmarkData)),
+  setNotes: noteData => dispatch(setNotes(noteData)),
 });
 
 export default connect(mapsStateToProps, mapDispatchToProps)(NavHeader);

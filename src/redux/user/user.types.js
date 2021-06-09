@@ -35,6 +35,9 @@ const userActionTypes = {
   STREAM: 'STREAM',
   ONSHARE: 'ONSHARE',
   SET_SHARE_DATA: 'SET_SHARE_DATA',
+  SET_LAST_PROFILE: 'SET_LAST_PROFILE',
+  OPEN_MESSAGE: 'OPEN_MESSAGE',
+  CLOSE_MESSAGE: 'CLOSE_MESSAGE',
 };
 
 export default userActionTypes;

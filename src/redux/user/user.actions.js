@@ -1,6 +1,5 @@
 import userActionTypes from './user.types';
 
-
 // export const setCurrentUser = (user)=> ({
 //     type: userActionTypes.SET_CURRENT_USER,
 //     payload: user
@@ -24,7 +23,6 @@ export const emailSignInPending = emailAndPassword => ({
   type: userActionTypes.EMAIL_SIGNIN_PENDING,
   payload: emailAndPassword,
 });
-
 
 export const signUpPending = signUpData => ({
   type: userActionTypes.SIGN_UP_START,
@@ -112,51 +110,58 @@ export const fetchNameFailed = e => ({
   payload: e,
 });
 
-export const setLibraryType = (type) =>({
+export const setLibraryType = type => ({
   type: userActionTypes.SET_LIBRARY_TYPE,
-  payload: type
-})
+  payload: type,
+});
 
-export const toggleTimer = () =>({
-  type: userActionTypes.TOGGLE_TIMER
-})
+export const toggleTimer = () => ({
+  type: userActionTypes.TOGGLE_TIMER,
+});
 
-export const setRoom = (room) =>({
+export const setRoom = room => ({
   type: userActionTypes.ROOM,
-  payload: room
-})
+  payload: room,
+});
 
-export const setLastMessage = (message) =>({
+export const setLastMessage = message => ({
   type: userActionTypes.LAST_MESSAGE,
-  payload: message
-})
+  payload: message,
+});
 
-export const setMessage = (message) =>({
+export const setMessage = message => ({
   type: userActionTypes.MESSAGE,
-  payload: message
-})
+  payload: message,
+});
 
-export const setName = (name) =>({
+export const setName = name => ({
   type: userActionTypes.NAME,
-  payload: name
-})
+  payload: name,
+});
 
-export const clearChat = () =>({
-  type: userActionTypes.CLEAR_CHAT
-})
+export const clearChat = () => ({
+  type: userActionTypes.CLEAR_CHAT,
+});
 
-export const setStream = (stream) =>({
-type: userActionTypes.STREAM,
-payload: stream
-})
+export const setStream = stream => ({
+  type: userActionTypes.STREAM,
+  payload: stream,
+});
 
-export const onShare = (bool) =>({
+export const onShare = bool => ({
   type: userActionTypes.ONSHARE,
-  payload: bool
-})
+  payload: bool,
+});
 
-export const setShareData = (shareData) =>({
+export const setShareData = shareData => ({
   type: userActionTypes.SET_SHARE_DATA,
-  payload: shareData
-})
+  payload: shareData,
+});
 
+export const openMessage = () => ({
+  type: userActionTypes.OPEN_MESSAGE,
+});
+
+export const closeMessage = () => ({
+  type: userActionTypes.CLOSE_MESSAGE,
+});

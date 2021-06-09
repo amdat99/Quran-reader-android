@@ -3,7 +3,12 @@ export const setCurrentPage = (mushafs, mushafData) => {
   if (existingPage) {
     return mushafs.map(mushaf =>
       mushaf.id === mushafData.id
-        ? {id: mushafData.id, title: mushafData.title, page: mushafData.page, cover: mushafData.cover}
+        ? {
+            id: mushafData.id,
+            title: mushafData.title,
+            page: mushafData.page,
+            cover: mushafData.cover,
+          }
         : {...mushaf},
     );
   }

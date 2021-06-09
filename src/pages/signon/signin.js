@@ -12,10 +12,15 @@ import {createStructuredSelector} from 'reselect';
 
 import {StyleSheet, Text, View, TextInput, Platform, Alert} from 'react-native';
 
-function SignIn({googleSignInPending, emailSignInPending,toggleLogin,toggleVerify,currentUser}) {
+function SignIn({
+  googleSignInPending,
+  emailSignInPending,
+  toggleLogin,
+  toggleVerify,
+  currentUser,
+}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
 
   const handleSubmit = async () => {
     if (!email || !password) {
@@ -25,11 +30,7 @@ function SignIn({googleSignInPending, emailSignInPending,toggleLogin,toggleVerif
       return;
     }
     emailSignInPending(email, password);
- 
-    
-    
   };
-
 
   return (
     <>
@@ -51,7 +52,7 @@ function SignIn({googleSignInPending, emailSignInPending,toggleLogin,toggleVerif
           secureTextEntry={true}
           style={styles.inputs}
         />
-      
+
         <View style={styles.buttons}>
           <Text style={styles.buttonText} onPress={handleSubmit}>
             {' '}
@@ -70,7 +71,9 @@ function SignIn({googleSignInPending, emailSignInPending,toggleLogin,toggleVerif
             I don't have an account
           </Text>
         </View>
-        <Text style={{fontSize:10, marginTop:20}} onPress={toggleVerify}>Forgot Password</Text>
+        <Text style={{fontSize: 10, marginTop: 20}} onPress={toggleVerify}>
+          Forgot Password
+        </Text>
       </View>
     </>
   );

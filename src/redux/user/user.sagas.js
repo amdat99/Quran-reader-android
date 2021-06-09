@@ -1,9 +1,9 @@
 import {takeLatest, put, all, call} from 'redux-saga/effects';
 
-import { Alert} from 'react-native';
+import {Alert} from 'react-native';
 
 import uuid from 'react-native-uuid';
-import{ sendProfileChange} from '../../sockets/sockets'
+import {sendProfileChange} from '../../sockets/sockets';
 import {
   signInSuccess,
   signInFailure,
@@ -18,10 +18,9 @@ import {
   fetchNameSuccess,
   fetchNameFailed,
   setLibraryType,
-
 } from './user.actions';
 
-import {fetchCopiesPending} from '../page/page.actions'
+import {fetchCopiesPending} from '../page/page.actions';
 
 import userActionTypes from './user.types';
 
@@ -36,46 +35,39 @@ import {
 
 // import {sendProfileChange } from "../../sockets/sockets"
 
-
-
 export function* signInWithEmail({payload: {email, password}}) {
   try {
-
     // const response = yield fetch('http://192.168.11.177:3000/fetchuser',{
-      const response = yield fetch(
-        "https://quranlive-api.herokuapp.com/fetchuser",
-        {
-      method: "post",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email:email,
-        password:password,
-      }),
-    }
-  );
-  const data = yield response.json();
-  console.log(data);
- {
-   
-  if(data !== "wrong credentials"){
-    yield put(signInSuccess(data));
+    const response = yield fetch(
+      'https://quranlive-api.herokuapp.com/fetchuser',
+      {
+        method: 'post',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      },
+    );
+    const data = yield response.json();
+    console.log(data);
+    {
+      if (data !== 'wrong credentials') {
+        yield put(signInSuccess(data));
 
-    if(data == "wrong credentials"){
-      yield put(signInFailure(data))
-    }
-  
-    yield put(setLibraryType())
-  
-    yield put(fetchCopiesPending(data[0].contentid));
+        if (data == 'wrong credentials') {
+          yield put(signInFailure(data));
+        }
 
-  }  
-  }
+        yield put(setLibraryType());
+
+        yield put(fetchCopiesPending(data[0].contentid));
+      }
+    }
   } catch (error) {
     yield put(signInFailure(error));
   }
 }
-
-
 
 export function* onGetProfileName({payload: profileId}) {
   try {
@@ -111,42 +103,40 @@ export function* signOut() {
 }
 
 export function* registerUserAsync({
-  payload: {  userName,password,email,userId,profileId,contentId },
+  payload: {userName, password, email, userId, profileId, contentId},
 }) {
-
-  console.log({payload:{ userName,password,email,userId,profileId,contentId }})
+  console.log({
+    payload: {userName, password, email, userId, profileId, contentId},
+  });
   try {
     const response = yield fetch(
-      "https://quranlive-api.herokuapp.com/adduser",
+      'https://quranlive-api.herokuapp.com/adduser',
       {
         // const response = yield fetch('http://192.168.11.177:3000/adduser',{
-        method: "post",
-        headers: { "Content-Type": "application/json" },
+        method: 'post',
+        headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
-          email:email,
-          password:password,
+          email: email,
+          password: password,
           userId: userId,
           contentId: contentId,
           profileId: profileId,
           userName: userName,
           userId: userId,
         }),
-      }
+      },
     );
     const data = yield response.json();
     console.log(data);
     if (data.email) {
       yield put(signInSuccess(data));
-      yield put(setLibraryType())
-    yield put(fetchCopiesPending(data[0].contentid));
+      yield put(setLibraryType());
+      yield put(fetchCopiesPending(data[0].contentid));
     }
   } catch (e) {
-    yield put(signUpFailure(e))
+    yield put(signUpFailure(e));
   }
 }
-
-
-
 
 export function* onEmailSignInPending() {
   yield takeLatest(userActionTypes.EMAIL_SIGNIN_PENDING, signInWithEmail);
@@ -156,11 +146,9 @@ export function* onCheckUserSession() {
   yield takeLatest(userActionTypes.CHECK_USER_SESSION, isUserAuthenticated);
 }
 
-
 export function* onSignUpPending() {
   yield takeLatest(userActionTypes.SIGN_UP_START, registerUserAsync);
 }
-
 
 export function* onGetProfileNamePending() {
   yield takeLatest(userActionTypes.FETCH_NAME_PENDING, onGetProfileName);
