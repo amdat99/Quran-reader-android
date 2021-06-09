@@ -540,7 +540,7 @@ class Mushaf extends React.Component {
             </View>
           ) : null}
 
-          {showShareMes ? (
+          {/* {showShareMes ? (
             <View style={styles.topsharemessage}>
               <Text style={{marginLeft: 10, fontSize: 15}}>
                 {this.props.shareData[0].name} is requesting copy share:{' '}
@@ -563,7 +563,7 @@ class Mushaf extends React.Component {
                 join
               </Text>
             </View>
-          ) : null}
+          ) : null} */}
 
           <View
             style={

@@ -53,11 +53,13 @@ function SocketOverlay({
   setMessage,
   setName,
   setStream,
+  setShareData
 }) {
   const [stream, setOnStream] = useState(null);
   const [onReq, setOnReq] = useState(null);
   const [remoteSdp, setRemoteSdp] = useState(null);
   const [candidates, setCandidates] = useState(null);
+  const [lastCopy, setLastCopy] = useState(null);
 
   const configuration = {iceServers: [{url: 'stun:stun.l.google.com:19302'}]};
   const pc = new RTCPeerConnection(configuration);
@@ -110,6 +112,7 @@ function SocketOverlay({
       if (onReq.type === 'startshare') {
         setShareData({data: onReq.payload, name: onReq.name});
         console.log('share req received');
+        console.log('p',onReq.payload);
       }
       if (onReq.type === 'sharejoined') {
         console.log('both users read to share');
@@ -172,7 +175,9 @@ function SocketOverlay({
     };
   };
 
-  return <View style={{position: 'absolute', top: 100, zIndex: 999}}></View>;
+  return <View style={{position: 'absolute', top: 100, zIndex: 999999}}>
+
+  </View>;
 }
 
 const mapStateTopProps = createStructuredSelector({

@@ -10,7 +10,7 @@ import MessageBox from '../../components/message-box/Message-box'
 import TopMessages from '../../components/top-messages/Top-messages';
 import AddCopy from '../../components/add-copy/Addcopy';
 
-import {selectCurrentUser, selectStream, selectMessage, selectTimer, selectLastMessage, selectRoom, selectName, selectOpenMessage} from '../../redux/user/user.selectors';
+import {selectCurrentUser, selectStream, selectMessage, selectTimer, selectLastMessage, selectRoom, selectName, selectOpenMessage,selectShareData} from '../../redux/user/user.selectors';
 import {
   addMushaf,
   setMushafs,
@@ -22,7 +22,8 @@ import {
   setCurrentOnlineMushaf,
   setPagesRead,
   setTargets,
-  setLastProfile
+  setLastProfile,
+  setCurrentShareMushaf
 } from '../../redux/page/page.actions';
 
 import {selectMushafs, selectLibrary,  selectOpenProfile, selectOnlineMushafs, selectBookmarks, selectNotes,selectPagesRead , selectLastP, selectTargets} from '../../redux/page/page.selectors';
@@ -87,7 +88,9 @@ function Library({
   setLastProfile,
   setShareData,
   messageToggle,
-  lastProfile
+  lastProfile,
+  shareData,
+  setCurrentShareMushaf
 }) {
 
 
@@ -310,15 +313,23 @@ const resetMessage = () => {
     setShowDelete(false);
   };
 
-  const onCopyShare = async () => {
+  const onCopyShare = async (profile) => {
    
     // await setShareData({id:id, userid:userid,change:Math.random()});
-    await setRoom
+  await setRoom(profile)
     await sendAudioLink(shareCopy,currentUser[0].name,'startshare')
    await onShare(true);
     await onEnterCopy(shareCopy.id)
   }
 
+
+  const onEnterShareCopy = () =>{
+    setLibraryType(true)
+    navigation.navigate('Quran');
+    resetMessage()
+    toggleTimer()
+    
+  }
 
   const onEnterCopy = (id) => {
     if(toggleCopiesType){
@@ -379,7 +390,7 @@ const onSetTargets = () => {
   setShowDelete(false)
 }
 
-  console.log(lastProfile)
+
 
 
   return (
@@ -388,6 +399,13 @@ const onSetTargets = () => {
       
       
 
+{shareData?
+<View style ={styles.topmessage}>
+<Text>{shareData.name} wants to copy share</Text>
+<Text style ={{color:'green'}} onPress={()=>{setCurrentShareMushaf([shareData.data]); onEnterShareCopy()}}>accept</Text>
+<Text style={{color:'red'}} onPress={()=>setShareData(null)}>Reject</Text>
+</View>
+:null}
 
     <TopMessages   seconds = {seconds}time = {time} pagesRead={pagesRead} targets = {targets} setTargets = {setTargets} resetMessage = {resetMessage} minutes = {minutes}/>
       
@@ -498,8 +516,8 @@ mushafs.map((mushaf, i) => (
 
    <>
  
-    <Text onPress= {()=>{setRoom(profile.profileid); onCopyShare() }}>{profile.name}</Text>
-    <Text  onPress= {()=>{setRoom(profile.profileid); onCopyShare() }} style={{fontSize: 10,color:'green'}}>{profile.status}</Text>
+    <Text onPress= {()=>{setRoom(profile.profileid); onCopyShare(profile.profileid) }}>{profile.name}</Text>
+    <Text  onPress= {()=>{setRoom(profile.profileid); onCopyShare(profile.profileid) }} style={{fontSize: 10,color:'green'}}>{profile.status}</Text>
    </>
  )
     : null}
@@ -583,6 +601,7 @@ const mapDispatchToProps = dispatch => ({
   setLastProfile: (data) => dispatch(setLastProfile(data)),
   closeMessage:() => dispatch(closeMessage()),
   openMessage:() => dispatch(openMessage()),
+  setCurrentShareMushaf: mushafData => dispatch(setCurrentShareMushaf(mushafData)),
 });
 
 const mapStateToProps = createStructuredSelector({
@@ -603,6 +622,7 @@ const mapStateToProps = createStructuredSelector({
   stream: selectStream,
   lastProfile: selectLastP,
   messageToggle: selectOpenMessage,
+  shareData: selectShareData
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Library);
