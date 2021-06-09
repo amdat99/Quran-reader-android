@@ -19,6 +19,7 @@ function TopMessages({
   time,
   targets,
   pagesRead,
+  seconds,
   minutes,
 }) {
   return (

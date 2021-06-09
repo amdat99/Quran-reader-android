@@ -32,6 +32,7 @@ import {
   setPagesRead,
   setOpenProfile,
   enterLibrary,
+   setLastProfile,
   setCurrentOnlineMushaf,
 } from '../../redux/page/page.actions';
 import {
@@ -44,7 +45,7 @@ import {
   selectLastMessage,
   selectShareData,
 } from '../../redux/user/user.selectors';
-import {toggleTimer} from '../../redux/user/user.actions';
+import {toggleTimer,openMessage} from '../../redux/user/user.actions';
 import {
   sendCounterRequest,
   enterChat,
@@ -524,7 +525,9 @@ class Mushaf extends React.Component {
               <Text
                 onPress={() => {
                   this.props.navigation.push('library');
-                  this.props.setOpenProfile();
+                  this.props.setLastProfile({id: this.props.lastMessage.id,name: this.props.lastMessage.name});
+                  this.props.openMessage()
+                  this.props.setOpenProfile()
                 }}
                 style={{marginLeft: 10, fontSize: 15}}>
                 {this.props.lastMessage.message}
@@ -637,6 +640,8 @@ const mapDispatchToProps = dispatch => ({
   enterLibrary: () => dispatch(enterLibrary()),
   setCurrentShareMushaf: mushafData =>
     dispatch(setCurrentShareMushaf(mushafData)),
+    setLastProfile: (data) => dispatch(setLastProfile(data)),
+    openMessage:() => dispatch(openMessage()),
 });
 
 const mapStateToProps = createStructuredSelector({
