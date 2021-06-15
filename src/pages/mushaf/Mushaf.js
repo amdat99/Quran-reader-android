@@ -34,6 +34,7 @@ import {
   enterLibrary,
    setLastProfile,
   setCurrentOnlineMushaf,
+  setCurrentShareMushaf
 } from '../../redux/page/page.actions';
 import {
   selectCurrentMushaf,
@@ -44,8 +45,9 @@ import {
   selectLibrary,
   selectLastMessage,
   selectShareData,
+  selectOnShare
 } from '../../redux/user/user.selectors';
-import {toggleTimer,openMessage} from '../../redux/user/user.actions';
+import {toggleTimer,openMessage, setRoom, setShareData,onShare} from '../../redux/user/user.actions';
 import {
   sendCounterRequest,
   enterChat,
@@ -126,6 +128,9 @@ class Mushaf extends React.Component {
       currentUser,
       toggleTimer,
       enterLibrary,
+      shareData,
+      setRoom,
+      setOnShare
     } = this.props;
     this.stopSound();
     this.pagesRead = 1;
@@ -137,6 +142,12 @@ class Mushaf extends React.Component {
     if (currentUser) {
       fetchCopiesPending(currentUser[0].contentid);
       updateStatus('online', currentUser[0].userid);
+    }
+
+    if(shareData){
+       sendAudioLink(null,currentUser[0].name,'end')
+       setRoom(currentUser[0].profileid)
+       setOnShare(true)
     }
 
     this.pagesRead = 1;
@@ -305,6 +316,20 @@ class Mushaf extends React.Component {
     }, 3000);
   };
 
+  onSetSharePage = (page) =>{
+
+    const onUpdate = () => {
+      this.pdf.setPage(parseInt(page));;
+    };
+
+    this.props.setOnShare(false)
+    onUpdate()
+   setTimeout(function () {
+      onUpdate();
+    }, 300);
+
+  }
+
   onUpdatePage = () => {
     this.props.setPagesRead(this.pagesRead + 1);
     this.pagesRead = this.pagesRead + 1;
@@ -357,10 +382,25 @@ class Mushaf extends React.Component {
       message,
       showMessage,
       showShareMes,
+      setShareData,
+      sendAudioLink,
+      
     } = this.state;
-
+    const{shareData,setCurrentShareMushaf} = this.props;
     return (
       <>
+
+{this.props.shareData && this.props.onShare?
+  <View style ={styles.topmessage}>
+    
+   <Text>{shareData.name} wants to copy share</Text>
+  
+    <Text style ={{color:'green'}} onPress={()=>{setCurrentShareMushaf([shareData.data]);this.onSetSharePage(shareData.data.page) }}>accept</Text>
+    <Text style={{color:'red'}} onPress={()=>{setShareData(null);sendAudioLink(null,currentUser[0].name,'reject') }}>Reject</Text>
+  </View>
+:null}
+
+
         <View style={styles.container}>
           {this.state.toggleNav ? (
             <>
@@ -540,31 +580,6 @@ class Mushaf extends React.Component {
             </View>
           ) : null}
 
-          {/* {showShareMes ? (
-            <View style={styles.topsharemessage}>
-              <Text style={{marginLeft: 10, fontSize: 15}}>
-                {this.props.shareData[0].name} is requesting copy share:{' '}
-              </Text>
-              <Text
-                onPress={() => {
-                  this.setState({showShareMes: false});
-                  sendAudioLink(null, currentUser[0].name, 'reject');
-                }}
-                style={{marginLeft: 10, fontSize: 12, color: 'red'}}>
-                reject
-              </Text>
-              <Text
-                onPress={() => {
-                  this.setState({showShareMes: false});
-                  sendAudioLink(null, currentUser[0].name, 'sharejoined');
-                  setCurrentShareMushaf(this.props.shareData.data);
-                }}
-                style={{marginLeft: 10, fontSize: 12, color: 'green'}}>
-                join
-              </Text>
-            </View>
-          ) : null} */}
-
           <View
             style={
               this.state.showImages ? styles.pdfHide : styles.containerPdf
@@ -642,6 +657,9 @@ const mapDispatchToProps = dispatch => ({
     dispatch(setCurrentShareMushaf(mushafData)),
     setLastProfile: (data) => dispatch(setLastProfile(data)),
     openMessage:() => dispatch(openMessage()),
+  setShareData:(data) => dispatch(setShareData(data)),
+  setRoom: (room) => dispatch(setRoom(room)),
+  setOnShare:(bool) => dispatch(onShare(bool))
 });
 
 const mapStateToProps = createStructuredSelector({
@@ -650,6 +668,7 @@ const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
   lastMessage: selectLastMessage,
   shareData: selectShareData,
+  onShare: selectOnShare
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Mushaf);

@@ -118,11 +118,17 @@ function SocketOverlay({
         console.log('both users read to share');
       }
 
-      if (onReq.type === 'reject') {
-        Alert.alert('Rejetion', `${onReq.name} refused you request`, [], {
+      if (onReq.type === 'reject' && onReq.name !== currentUser[0].name) {
+        Alert.alert('Rejection', `${onReq.name} refused you request`, [], {
           cancelable: true,
         });
       }
+
+      if (onReq.type === 'end') {
+        console.log('copy share ended');
+        setShareData(null)
+      }
+
 
       if (onReq.type === 'offer') {
         console.log('received offer');

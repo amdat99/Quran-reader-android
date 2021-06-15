@@ -18,7 +18,7 @@ import {setRoom} from '../../redux/user/user.actions';
 import {sendProfileChange} from '../../sockets/sockets';
 import {updateStatus} from '../library/utils';
 
-function SignOn({currentUser, setRoom}) {
+function SignOn({currentUser, setRoom, navigation}) {
   const [showLogin, setShowLogin] = useState(true);
   const [toggleForgetPassword, setToggleForgetPassword] = useState(false);
   const [email, setVerifyEmail] = useState('');
@@ -153,11 +153,14 @@ function SignOn({currentUser, setRoom}) {
           </View>
         )
       ) : currentUser ? (
-        <View key={currentUser[0].userid} style={styles.salamText}>
+  
+        <View key={currentUser[0].userid} style={styles.salamText}>     
+     
           <Text style={{fontSize: 20}}>
             {' '}
             As-salamu alaykum {currentUser[0].name}
-          </Text>
+          </Text>    
+          <Text onPress={() =>navigation.push('library')}>Back to Library</Text>
         </View>
       ) : (
         <>

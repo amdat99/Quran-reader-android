@@ -9,6 +9,7 @@ import Profiles from '../../components/profiles/Profiles'
 import MessageBox from '../../components/message-box/Message-box'
 import TopMessages from '../../components/top-messages/Top-messages';
 import AddCopy from '../../components/add-copy/Addcopy';
+import MessagePrompt from '../../components/message-prompt/Message-prompt';
 
 import {selectCurrentUser, selectStream, selectMessage, selectTimer, selectLastMessage, selectRoom, selectName, selectOpenMessage,selectShareData} from '../../redux/user/user.selectors';
 import {
@@ -220,7 +221,7 @@ useEffect(() => {
       setToggleProfiles(true)
    },[openProfile])
 
-  const covers = [
+const covers = [
     {id:1, src: true},
     {id:2, src: true},
     {id:3, src: true},
@@ -229,8 +230,8 @@ useEffect(() => {
   ]
 
 let currentMushafs;
-  let currentBoomarks
-  let currentNotes
+let currentBoomarks
+let currentNotes
 
  
 const addMushafData = async () => {
@@ -318,13 +319,15 @@ const resetMessage = () => {
     // await setShareData({id:id, userid:userid,change:Math.random()});
   await setRoom(profile)
     await sendAudioLink(shareCopy,currentUser[0].name,'startshare')
-   await onShare(true);
+   await onShare(false);
     await onEnterCopy(shareCopy.id)
   }
 
 
   const onEnterShareCopy = () =>{
+
     setLibraryType(true)
+    
     navigation.navigate('Quran');
     resetMessage()
     toggleTimer()
@@ -369,7 +372,7 @@ if(profileData){
   let seconds = time - minutes * 60;
 
   const onNotSignedIn = () => {
-  Alert.alert(' live chat', ' sign in to send messages', [], {
+  Alert.alert(' live chat', ' please sign in to send messages', [], {
     cancelable: true,
    }) 
 
@@ -390,191 +393,168 @@ const onSetTargets = () => {
   setShowDelete(false)
 }
 
-
-
-
-  return (
-    <>
-      <ScrollView style={styles.mainContainer}>    
+return (
+<>
+<ScrollView style={styles.mainContainer}>    
       
-      
-
 {shareData?
-<View style ={styles.topmessage}>
-<Text>{shareData.name} wants to copy share</Text>
-<Text style ={{color:'green'}} onPress={()=>{setCurrentShareMushaf([shareData.data]); onEnterShareCopy()}}>accept</Text>
-<Text style={{color:'red'}} onPress={()=>setShareData(null)}>Reject</Text>
-</View>
+  <View style ={styles.topmessage}>
+   <Text>{shareData.name} wants to copy share</Text>
+    <Text style ={{color:'green'}} onPress={()=>{setCurrentShareMushaf([shareData.data]); onEnterShareCopy()}}>accept</Text>
+    <Text style={{color:'red'}} onPress={()=>{setShareData(null);sendAudioLink(null,currentUser[0].name,'reject') }}>Reject</Text>
+  </View>
 :null}
 
-    <TopMessages   seconds = {seconds}time = {time} pagesRead={pagesRead} targets = {targets} setTargets = {setTargets} resetMessage = {resetMessage} minutes = {minutes}/>
-      
+  <TopMessages   seconds = {seconds}time = {time} pagesRead={pagesRead} targets = {targets} setTargets = {setTargets} resetMessage = {resetMessage} minutes = {minutes}/>
 
-{ currentUser && showMes && lastMessage? 
-currentUser[0].name === name ? null :
-
-
-
-<View style ={styles.topmessage}>
-    <Text onPress={()=> {setLastProfile({id:lastMessage.id, name:lastMessage.name}); openMessage()}} style={{marginLeft:10 ,fontSize:15}}> {lastMessage.message}</Text>
-    <Text  onPress={() => setShowMes(false)} style={{marginLeft:10 ,fontSize:12, color:'red'}}>x</Text>
-   </View> 
-   :null
+{currentUser && showMes && lastMessage? 
+  currentUser[0].name === name ? null :
+  <MessagePrompt lastMessage={lastMessage} openMessage ={openMessage} setLastProfile ={setLastProfile} setShowMes={setShowMes} />
+:null
    }
-        <View style={styles.signonText}>
-          {userCount?
-          currentUser ? (
-            <View>
-              <Text style={{ position: 'absolute',left: Dimensions.get('window').width/5.5}} onPress={onSignOut}> sign out</Text>
-            </View>
-          ) : (
-            <Text onPress={() => navigation.navigate('signon')}>
-              signin/register
-            </Text>
-          ): null}
-          {currentUser?
-        
-          toggleCopiesType ? 
-          <Text onPress={toggleLibraries} style={{ position: 'relative' , left:Dimensions.get('window').width/20,marginTop:35,backgroundColor: '#e8d087', borderRadius:30,padding:2}} onPress={toggleLibraries}> Set Offline Library </Text>
-          :<Text onPress={toggleLibraries} style={{ position: 'relative' , left:Dimensions.get('window').width/20,marginTop:35,backgroundColor: '#e8d087', borderRadius:30,padding:2}} onPress={toggleLibraries}> Set Online Library </Text>
-       
-          
+  
+  <View style={styles.signonText}>
+  {userCount?
+  currentUser ? (
+    <View>
+      <Text style={{ position: 'absolute',left: Dimensions.get('window').width/5.5}} onPress={onSignOut}> sign out</Text>
+    </View>
+    ) : (
+      <Text onPress={() => navigation.navigate('signon')}>
+       signin/register
+      </Text>
+     ): null}
     
-            :null}
-        {userCount ?
-        userCount.map((count,i) =>
-          <>
-          <Text key = {count.count} style={{left:30,position:'absolute',marginTop:3}}> {count.count} users are praying</Text>
-          <Text key = {i} style={{left:30,position:'absolute',marginTop:21,     height: 1,
+    {currentUser?
+    toggleCopiesType ? 
+      <Text onPress={toggleLibraries} style={{ position: 'relative' , left:Dimensions.get('window').width/20,marginTop:35,backgroundColor: '#e8d087', borderRadius:30,padding:2}} onPress={toggleLibraries}> Set Offline Library </Text>
+      :<Text onPress={toggleLibraries} style={{ position: 'relative' , left:Dimensions.get('window').width/20,marginTop:35,backgroundColor: '#e8d087', borderRadius:30,padding:2}} onPress={toggleLibraries}> Set Online Library </Text>
+    :null}
+
+    {userCount ?
+    userCount.map((count,i) =>
+      <>
+        <Text key = {count.count} style={{left:30,position:'absolute',marginTop:3}}> {count.count} users are praying</Text>
+        <Text key = {i} style={{left:30,position:'absolute',marginTop:21,     height: 1,
                       backgroundColor: '#e8d087',
-                      width: Dimensions.get('window').width/3,}}></Text>
-          </>
+                      width: Dimensions.get('window').width/3,}}>
+        </Text>
+      </>
         )
-        :null}
+    :null}
     
-        </View>
-        <View style={styles.container}>
-          
-          <Text>
+    </View>
+      
+    <View style={styles.container}>
+      <Text>
     {currentUser?
     toggleCopiesType?
-    onlineCopies?
-    onlineCopies.map((mushaf, i) => (
+      onlineCopies?
+      onlineCopies.map((mushaf, i) => (
             
-  <View key={mushaf.id} >
+      <View key={mushaf.id} >
 
-   <CopyOffline mushaf={mushaf} deleteM={deleteM} onEnterCopy={onEnterCopy} 
-  setShareCopy={setShareCopy} setToggleShare={setToggleShare}
-    showDelete={showDelete} setShowDelete = {setShowDelete}  toggleTargets = {toggleTargets}/>
-  </View>))
-
-  : null
- 
-:null
+        <CopyOffline mushaf={mushaf} deleteM={deleteM} onEnterCopy={onEnterCopy} 
+        setShareCopy={setShareCopy} setToggleShare={setToggleShare}
+        showDelete={showDelete} setShowDelete = {setShowDelete}  toggleTargets = {toggleTargets}/>
+     </View>))
+     : null
+    :null
  
 
 : mushafs?
   mushafs.map((mushaf, i) => (
-            
     <View key={mushaf.id} >
-     <CopyOffline mushaf={mushaf} deleteM={deleteM} onEnterCopy={onEnterCopy} 
-     setShareCopy={setShareCopy} showDelete={showDelete} setToggleShare={setToggleShare}
-     setShowDelete = {setShowDelete} toggleTargets ={toggleTargets}/>
+       <CopyOffline mushaf={mushaf} deleteM={deleteM} onEnterCopy={onEnterCopy} 
+      setShareCopy={setShareCopy} showDelete={showDelete} setToggleShare={setToggleShare}
+      setShowDelete = {setShowDelete} toggleTargets ={toggleTargets}/>
     </View>))
   :null}
- 
-  
-
-
-          </Text>
-        </View>
-
+    </Text>
+        
+    </View>
+    
     <View  style={styles.container2 }>
-        { toggleCopiesType? null :
-      currentUser?
-mushafs.map((mushaf, i) => (
-            
-            <View key={mushaf.id} >
+      {toggleCopiesType? null :
+       currentUser?
+        mushafs.map((mushaf, i) => (
+          <View key={mushaf.id} >
              <CopyOffline mushaf={mushaf} deleteM={deleteM} onEnterCopy={onEnterCopy} 
                 setToggleShare={setToggleShare}  setShareCopy={setShareCopy}  showDelete={showDelete} 
                 setShowDelete = {setShowDelete} toggleTargets ={toggleTargets} />
-       
-              </View>
-   
-    
-            ))
-:null}</View>
+           </View>
+        ))
+      :null}
+    </View>
 
-{ toggleShare ?
-<View style={styles.shareBox}>
+  { toggleShare ?
+  <View style={styles.shareBox}>
   <>
-  <Text onPress={()=>setToggleShare(false)}>x</Text>
-  <Text>choose user to copy share with:</Text>
+    <Text onPress={()=>setToggleShare(false)}>x</Text>
+    <Text>choose user to copy share with:</Text>
   </>
-  {profileData?   
-  profileData.map(profile=>
-
-   <>
- 
-    <Text onPress= {()=>{setRoom(profile.profileid); onCopyShare(profile.profileid) }}>{profile.name}</Text>
-    <Text  onPress= {()=>{setRoom(profile.profileid); onCopyShare(profile.profileid) }} style={{fontSize: 10,color:'green'}}>{profile.status}</Text>
+    
+    {profileData?   
+    profileData.map(profile=>
+    <>
+      <Text onPress= {()=>{setRoom(profile.profileid); onCopyShare(profile.profileid) }}>{profile.name}</Text>
+      <Text  onPress= {()=>{setRoom(profile.profileid); onCopyShare(profile.profileid) }} style={{fontSize: 10,color:'green'}}>{profile.status}</Text>
    </>
  )
     : null}
   </View>
 :null}
 
-      </ScrollView>
-      <View  style={styles.addButton}>
-      <Text
-      
-        onPress={() => setToggleOnAdd(!toggleOnAdd)}>
+  </ScrollView>
+    <View  style={styles.addButton}>
+      <Text onPress={() => setToggleOnAdd(!toggleOnAdd)}>
         Add Mushaf
       </Text>
+    </View>  
 
-    
-</View>  
+    <AddCopy toggleOnAdd ={toggleOnAdd} setToggleOnAdd={setToggleOnAdd} covers={covers} 
+    setCover = {setCover} currentUser = {currentUser} addMushafData = {addMushafData}  setTitle ={setTitle} addOnlineMushafData ={addOnlineMushafData}/>
 
-<AddCopy toggleOnAdd ={toggleOnAdd} setToggleOnAdd={setToggleOnAdd} covers={covers} 
-setCover = {setCover} currentUser = {currentUser} addMushafData = {addMushafData}  setTitle ={setTitle} addOnlineMushafData ={addOnlineMushafData}/>
-
-     
-     
-      { profileData?
-     
-               <View style={styles.profile}>
-                 {currentUser && toggleProfiles  && lastMessage?
-                 <Text style={{fontSize:9,}}> last message: {lastMessage.message} </Text>:null}
-                { toggleProfiles?<Text  style={{color:'#c2b280'}}onPress={() =>setToggleProfiles(!toggleProfiles)}>Profiles -</Text>
-                  : <Text style={{color:'#c2b280'}} onPress={() =>setToggleProfiles(!toggleProfiles)}>Profiles +</Text>}
-                  <Text>{profileNumber} users online</Text>
-                 <ScrollView>
-           {profileData ?
-           profileData.map(profile=>
-            toggleProfiles? <Profiles setRoom={setRoom} openMessage={openMessage} data={profile} setLastProfile ={setLastProfile}/> : null
+  {profileData?
+  <View style={styles.profile}>
+      
+      {currentUser && toggleProfiles  && lastMessage?
+          <Text style={{fontSize:9,}}> last message: {lastMessage.message} </Text>:null}
+          
+          { toggleProfiles?<Text  style={{color:'#c2b280'}}onPress={() =>setToggleProfiles(!toggleProfiles)}>Profiles -</Text>
+          : <Text style={{color:'#c2b280'}} onPress={() =>setToggleProfiles(!toggleProfiles)}>Profiles +</Text>}
+                  
+          <Text>{profileNumber} users online</Text>
+   <ScrollView>
+           
+    {profileData ?
+      profileData.map(profile=>
+      toggleProfiles? 
+      <Profiles setRoom={setRoom} openMessage={openMessage} data={profile} setLastProfile ={setLastProfile}/> : null
             )
-          :null}
-         </ScrollView></View>
-:null}
-
-
-{messageToggle ?
-currentUser?
-<MessageBox setLastMessage = {setLastMessage} setName = {setName}setMessage={clearChat} initiateSocket = {initiateSocket}  disconnectSocket= {disconnectSocket}setRoom={setRoom} lastProfile={lastProfile} messages={message}  closeMessage={closeMessage} currentUser={currentUser[0]} setRoom={setRoom}/>
-
-: onNotSignedIn()
-:null
-}
-{showTargets?
-  <View style={styles.target}>
-    <Text  onPress={toggleTargets}>x</Text>
-    <Text>Add Prayer targets</Text>
-    <TextInput   keyboardType="numeric" placeholder ='How many pages do want to read' onChangeText={setTargetPages} />
-    <TextInput   keyboardType="numeric" placeholder ='How many minutes do you want to pray for' onChangeText={setTargetTime} />
-    <Text onPress={onSetTargets}>Add</Text>
+      :null}
+    </ScrollView>
+  
   </View>
-:null}
-    </>
+  :null}
+
+
+  {messageToggle ?
+    currentUser?
+      <MessageBox setLastMessage = {setLastMessage} setName = {setName}setMessage={clearChat} initiateSocket = {initiateSocket}  disconnectSocket= {disconnectSocket}setRoom={setRoom} lastProfile={lastProfile} messages={message}  closeMessage={closeMessage} currentUser={currentUser[0]} setRoom={setRoom}/>
+    : onNotSignedIn()
+  :null}
+
+  {showTargets?
+    <View style={styles.target}>
+      <Text  onPress={toggleTargets}>x</Text>
+      <Text>Add Prayer targets</Text>
+        <TextInput   keyboardType="numeric" placeholder ='How many pages do want to read' onChangeText={setTargetPages} />
+        <TextInput   keyboardType="numeric" placeholder ='How many minutes do you want to pray for' onChangeText={setTargetTime} />
+      <Text onPress={onSetTargets}>Add</Text>
+    </View>
+  :null}
+</>
   );
 }
 
@@ -602,6 +582,7 @@ const mapDispatchToProps = dispatch => ({
   closeMessage:() => dispatch(closeMessage()),
   openMessage:() => dispatch(openMessage()),
   setCurrentShareMushaf: mushafData => dispatch(setCurrentShareMushaf(mushafData)),
+
 });
 
 const mapStateToProps = createStructuredSelector({

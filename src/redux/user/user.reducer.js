@@ -19,7 +19,7 @@ const INITIAL_STATE = {
   lastMessage: null,
   name: null,
   stream: null,
-  onShare: null,
+  onShare: true,
   shareData: null,
   openMessage: false,
   lastProfile: null,
