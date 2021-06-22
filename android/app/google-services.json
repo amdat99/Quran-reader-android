@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "659697653361",
+    "project_id": "quranlive-39adf",
+    "storage_bucket": "quranlive-39adf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:659697653361:android:80223a19e97c6dfbd52dd0",
+        "android_client_info": {
+          "package_name": "com.ql"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "659697653361-cpfek15mqokb6qm8flr5419lji9j89jp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBdRnPMzJIAp9THRv8weZIhcyeFWNP3_KM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "659697653361-cpfek15mqokb6qm8flr5419lji9j89jp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
