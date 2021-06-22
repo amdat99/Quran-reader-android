@@ -47,7 +47,8 @@ import {
   selectLibrary,
   selectLastMessage,
   selectShareData,
-  selectOnShare
+  selectOnShare,
+  selectPushLibrary
 } from '../../redux/user/user.selectors';
 import {toggleTimer,openMessage, setRoom, setShareData,onShare} from '../../redux/user/user.actions';
 import {
@@ -123,6 +124,9 @@ class Mushaf extends React.Component {
     }
     if (this.props.shareData !== prevProps.shareData) {
       this.toggleShareMessage();
+    }
+    if(this.props.pushLibrary !== prevProps.pushLibrary) {
+      this.props.navigation.push('library');
     }
   }
 
@@ -622,7 +626,7 @@ this.props.shareData ?
             </View>
           ) : null}
 
-          {showMessage ? (
+          {/* {showMessage ? (
             <View style={styles.topmessage}>
               <Text
                 onPress={() => {
@@ -641,7 +645,7 @@ this.props.shareData ?
                 dsimiss
               </Text>
             </View>
-          ) : null}
+          ) : null} */}
 
           <View
             style={
@@ -736,7 +740,8 @@ const mapStateToProps = createStructuredSelector({
   lastMessage: selectLastMessage,
   shareData: selectShareData,
   onShare: selectOnShare,
-  sharePage: selectSharePage
+  sharePage: selectSharePage,
+  pushLibrary: selectPushLibrary
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Mushaf);

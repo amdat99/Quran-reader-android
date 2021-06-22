@@ -74,3 +74,8 @@ export const selectOpenMessage = createSelector(
   [selectUser],
   user => user.openMessage,
 );
+
+export const selectPushLibrary = createSelector(
+  [selectUser],
+  user => user.pushLibrary,
+);

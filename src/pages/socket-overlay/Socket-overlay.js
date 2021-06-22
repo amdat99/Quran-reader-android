@@ -14,13 +14,15 @@ import {
   sendAudioLink,
   enterAudioLink,
 } from '../../sockets/sockets';
-import {setShareChange, setSharePage} from '../../redux/page/page.actions';
+import {setShareChange, setSharePage, setLastProfile} from '../../redux/page/page.actions';
 import {
   setLastMessage,
   setMessage,
   setName,
   setStream,
   setShareData,
+  setPushLibrary,
+  openMessage
 } from '../../redux/user/user.actions';
 import {
   RTCPeerConnection,
@@ -55,9 +57,12 @@ function SocketOverlay({
   setMessage,
   setName,
   setStream,
+  setPushLibrary,
   setShareData,
   setShareChange,
   setSharePage,
+  openMessage, 
+  setLastProfile 
 }) {
   const [stream, setOnStream] = useState(null);
   const [rStream, setRStream] = useState(null);
@@ -89,6 +94,14 @@ function SocketOverlay({
 
     onNotification: function (notification) {
       console.log('NOTIFICATION:', notification);
+      console.log(notification.id,'ssaososa')
+      setLastProfile({id:notification.messageId.toString(), name:notification.title}); 
+      openMessage();
+      // }
+      
+      notification.id !==1?
+      setPushLibrary(Math.random())
+      : null
     },
       // process the notification
 
@@ -100,8 +113,10 @@ function SocketOverlay({
     onAction: function (notification) {
       console.log('ACTION:', notification.action);
       console.log('NOTIFICATION:', notification);
-
+      // if(notification.id !== 1 || notification.id !==2){
+     
       // process the action
+      
     },
 
     // // (optional) Called when the user fails to register for remote notifications. Typically occurs when APNS is having issues, or the device is a simulator. (iOS)
@@ -130,11 +145,12 @@ function SocketOverlay({
     // requestPermissions: true,
   });
 
-  const sendMessage = (title,message) => {
+  const sendMessage = (title,message,id) => {
+   
     PushNotification.localNotification({
       /* Android Only Properties */
       channelId: "channel-id", // (required) channelId, if the channel doesn't exist, notification will not trigger.
-
+      messageId: id,
       title: title, // (optional)
       message: message, // (required)
     });
@@ -173,9 +189,11 @@ function SocketOverlay({
         name: messageData.name,
       });
 
+      console.log(messageData.profile)
       setMessage({name: messageData.name, message: messageData.message});
       if(currentUser[0].name !== messageData.name){
-      sendMessage(messageData.name+':', messageData.message)
+      sendMessage(messageData.name+':', messageData.message, messageData.profile)
+      console.log('ii', parseInt(messageData.profile))
       }
       setName(messageData.name);
     }
@@ -203,7 +221,7 @@ function SocketOverlay({
       if (onReq.type === 'startshare') {
         setShareData({data: onReq.payload, name: onReq.name});
         if(currentUser[0].name !== onReq.name){
-        sendMessage('copy share request', onReq.name + 'wants to copy share' )
+        sendMessage('copy share request', onReq.name + 'wants to copy share',2 )
         }
       }
       if (onReq.type === 'sharejoined' && onReq.name !== currentUser[0].name) {
@@ -236,7 +254,7 @@ function SocketOverlay({
            
 
           // );
-          sendMessage('user left', onReq.name + ' is no longer copy sharing' )
+          sendMessage('user left', onReq.name + ' is no longer copy sharing',1 )
           setSharePage(null);
         }
       }
@@ -342,6 +360,9 @@ const mapDispatchToProps = dispatch => ({
   setStream: stream => dispatch(setStream(stream)),
   setShareData: shareData => dispatch(setShareData(shareData)),
   setShareChange: option => dispatch(setShareChange(option)),
+  setPushLibrary: data => dispatch(setPushLibrary(data)),
+  openMessage: () => dispatch(openMessage()),
+  setLastProfile: (data) => dispatch(setLastProfile(data)),
 });
 
 export default connect(mapStateTopProps, mapDispatchToProps)(SocketOverlay);

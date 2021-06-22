@@ -23,6 +23,7 @@ const INITIAL_STATE = {
   shareData: null,
   openMessage: false,
   lastProfile: null,
+  PushManager: null
 };
 const userReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -84,6 +85,11 @@ const userReducer = (state = INITIAL_STATE, action) => {
         ...state,
         libraryType: action.payload,
       };
+    case userActionTypes.PUSH_LIBRARY:
+      return {
+        ...state,
+        pushLibrary: action.payload
+      }
     case userActionTypes.TOGGLE_TIMER:
       return {
         ...state,

@@ -13,12 +13,12 @@ import {
 } from 'react-native';
 import {connect} from 'react-redux';
 import {createStructuredSelector} from 'reselect';
-import {selectCurrentUser} from '../../redux/user/user.selectors';
+import {selectCurrentUser, selectPushLibrary} from '../../redux/user/user.selectors';
 import {setRoom} from '../../redux/user/user.actions';
 import {sendProfileChange} from '../../sockets/sockets';
 import {updateStatus} from '../library/utils';
 
-function SignOn({currentUser, setRoom, navigation}) {
+function SignOn({currentUser, setRoom, navigation, pushLibrary}) {
   const [showLogin, setShowLogin] = useState(true);
   const [toggleForgetPassword, setToggleForgetPassword] = useState(false);
   const [email, setVerifyEmail] = useState('');
@@ -26,6 +26,12 @@ function SignOn({currentUser, setRoom, navigation}) {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [requestNotSent, setRequestNotSent] = useState(true);
+
+useEffect(() => {
+  if(pushLibrary){
+ navigation.push('library');
+  }
+},[pushLibrary])
 
   useEffect(() => {
     if (currentUser) {
@@ -202,6 +208,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
+  pushLibrary: selectPushLibrary,
 });
 
 const mapDispatchToProps = dispatch => ({

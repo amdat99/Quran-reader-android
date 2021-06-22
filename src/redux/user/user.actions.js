@@ -165,3 +165,8 @@ export const openMessage = () => ({
 export const closeMessage = () => ({
   type: userActionTypes.CLOSE_MESSAGE,
 });
+
+export const setPushLibrary = (data) =>({
+type: userActionTypes.PUSH_LIBRARY,
+payload: data
+})

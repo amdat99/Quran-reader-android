@@ -437,11 +437,11 @@ return (
 
   <TopMessages   seconds = {seconds}time = {time} pagesRead={pagesRead} targets = {targets} setTargets = {setTargets} resetMessage = {resetMessage} minutes = {minutes}/>
 
-{currentUser && showMes && lastMessage? 
+{/* {currentUser && showMes && lastMessage? 
   currentUser[0].name === name ? null :
   <MessagePrompt lastMessage={lastMessage} openMessage ={openMessage} setLastProfile ={setLastProfile} setShowMes={setShowMes} />
 :null
-   }
+   } */}
   
   <View style={styles.signonText}>
   {userCount?
