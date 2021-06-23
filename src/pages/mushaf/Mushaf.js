@@ -89,7 +89,9 @@ class Mushaf extends React.Component {
       name: null,
       message: null,
       showShareMes: false,
-      shareName:null
+      shareName:null,
+      translationFullscreen: false,
+      abovePdf: true
     };
     this.sound1 = null;
     this.currentPosition = null;
@@ -270,6 +272,7 @@ class Mushaf extends React.Component {
       togglePageNotes: !this.state.togglePageNotes,
       toggleTranslation: false
     });
+    this.toggleTranslationScreenMenu()
   };
 
   onCreateBookmark = () => {
@@ -281,6 +284,7 @@ class Mushaf extends React.Component {
       togglePageNotes: false,
       toggleTranslation: false
     });
+    this.toggleTranslationScreenMenu()
   };
 
   onSharePage = (page) => {
@@ -391,6 +395,18 @@ class Mushaf extends React.Component {
    }
   }
 
+  toggleTranslationScreen = () =>{
+    this.setState({translationFullscreen: !this.state.translationFullscreen, abovePdf: true})
+  }
+
+  toggleTranslationScreenMenu = () =>{
+    if(this.state.translationFullscreen){
+    this.setState({translationFullscreen: !this.state.translationFullscreen})
+    }
+  }
+
+
+
   render() {
     const {
       toggleJuz,
@@ -448,47 +464,50 @@ this.props.shareData ?
               <View style={styles.headers}>
                 <Text
                   style={styles.links}
-                  onPress={() =>
+                  onPress={() =>{
                     this.setState({
                       toggleJuz: true,
                       showMenu: true,
                       togglePage: false,
                       toggleSurah: false,
                       toggleTranslation: false
-                    })
-                  }
+                    });
+                    this.toggleTranslationScreenMenu()
+                  }}
                   style={styles.links}>
                   Para
                 </Text>
                 <Text
-                  onPress={() =>
+                  onPress={() =>{
                     this.setState({
                       toggleJuz: false,
                       showMenu: true,
                       togglePage: false,
                       toggleSurah: true,
                       toggleTranslation: false
-                    })
-                  }
+                    });
+                    this.toggleTranslationScreenMenu()
+                  }}
                   style={styles.links}>
                   Surah
                 </Text>
                 <Text
-                  onPress={() =>
+                  onPress={() =>{
                     this.setState({
                       toggleJuz: false,
                       showMenu: true,
                       togglePage: true,
                       toggleSurah: false,
                       toggleTranslation: false
-                    })
-                  }
+                    });
+                    this.toggleTranslationScreenMenu()
+                  }}
                   style={styles.links}>
                   Page
                 </Text>
 
                 <Text
-                  onPress={() =>
+                  onPress={() => 
                     this.setState({toggleTranslation: !toggleTranslation,
                       toggleJuz: false,
                       showMenu: true,
@@ -504,6 +523,8 @@ this.props.shareData ?
                   Translation
                 </Text>
 
+            
+
                 <Text onPress={this.onCreateBookmark} style={styles.links}>
                   {' '}
                   bookmarks
@@ -512,9 +533,15 @@ this.props.shareData ?
                   {' '}
                   notes
                 </Text>
+              
               </View>
-              {this.state.showMenu ? (
+              {this.state.showMenu  && this.state.abovePdf ? (
                 <View style={styles.header}>
+                  { !this.state.translationFullscreen ?
+                    <Text onPress={() => this.setState({abovePdf: !this.state.abovePdf})} style={styles.links}>
+                  {' '}
+                  🔃                </Text>
+  :null}
                   {this.props.currentMushaf.map(mushaf => (
                     <View key={mushaf.id}>
                       <NavHeader
@@ -535,7 +562,10 @@ this.props.shareData ?
                         onBookmark={this.onCreateBookmark}
                         shareData={this.props.shareData}
                         currentPage={currentPage}
+                        toggleTranslationScreen= {this.toggleTranslationScreen}
                         toggleTranslation={toggleTranslation}
+                        abovePdf={this.state.abovePdf}
+                        translationFullscreen={this.state.translationFullscreen}
                       />
                     </View>
                   ))}
@@ -544,7 +574,7 @@ this.props.shareData ?
               <View style={styles.audioLink}>
                 <Text
                   style={{marginRight: 8, fontFamily: 'System', fontSize: 20}}
-                  onPress={() =>
+                  onPress={() => {
                     this.setState({
                       toggleAddBookmark: !toggleAddBookmark,
                       showMenu: true,
@@ -552,13 +582,14 @@ this.props.shareData ?
                       toggleAddPageNotes: false,
                       togglePageNotes: false,
                       toggleTranslation: false
-                    })
-                  }>
+                    });
+                    this.toggleTranslationScreenMenu()
+                  }}>
                   🔖
                 </Text>
                 <Text
                   style={{marginRight: 8, fontFamily: 'System', fontSize: 20}}
-                  onPress={() =>
+                  onPress={() =>{
                     this.setState({
                       toggleAddBookmark: false,
                       showMenu: true,
@@ -566,8 +597,9 @@ this.props.shareData ?
                       toggleAddPageNotes: !toggleAddPageNotes,
                       togglePageNotes: false,
                       toggleTranslation: false
-                    })
-                  }>
+                    });      
+                    this.toggleTranslationScreenMenu()
+                  }}>
                   {' '}
                   📝
                 </Text>
@@ -577,9 +609,9 @@ this.props.shareData ?
                     fontFamily: 'System',
                     fontSize: 20,
                   }}
-                  onPress={() =>
-                    this.setState({toggleAudio: !toggleAudio, showMenu: true})
-                  }>
+                  onPress={() => {
+                    this.setState({toggleAudio: !toggleAudio, showMenu: true});  this.toggleTranslationScreenMenu()
+                  }}>
                   🔊
                 </Text>
               </View>
@@ -649,9 +681,9 @@ this.props.shareData ?
 
           <View
             style={
-              this.state.showImages ? styles.pdfHide : styles.containerPdf
+              this.state.translationFullscreen ? styles.pdfHide : styles.containerPdf
             }>
-            {this.props.currentMushaf
+            {this.props.currentMushaf 
               ? this.props.currentMushaf.map(mushaf => (
                   <Pdf
                     key={mushaf.id}
@@ -697,13 +729,51 @@ this.props.shareData ?
                     onPressLink={uri => {
                       console.log(`Link presse: ${uri}`);
                     }}
-                    style={styles.pdf}
+                    style={ this.state.showImages ? styles.pdfHide : styles.pdf}
                     spacing={5}
                   />
                 ))
               : null}
           </View>
-        </View>
+          </View>
+          {this.state.showMenu && !this.state.abovePdf ? (
+                <View style={styles.header2}>
+                  {this.state.translationFullscreen?
+                  <Text onPress={() => this.setState({abovePdf: !this.state.abovePdf})} style={styles.links}>
+                  {' '}
+                  🔃  
+                </Text>
+  :null}
+                  {this.props.currentMushaf.map(mushaf => (
+                    <View key={mushaf.id}>
+                      <NavHeader
+                        setPage={this.setPage}
+                        mushaf={mushaf}
+                        toggleJuz={toggleJuz}
+                        togglePage={togglePage}
+                        toggleSurah={toggleSurah}
+                        toggleAddBookmark={toggleAddBookmark}
+                        toggleBookmarks={toggleBookmarks}
+                        toggleAddPageNotes={toggleAddPageNotes}
+                        togglePageNotes={togglePageNotes}
+                        addBookmark={this.addBookmarkData}
+                        closePage={this.closePage}
+                        setNotePage={this.setNote}
+                        numberOfPages={this.state.numberOfPages}
+                        onNote={this.onCreateNote}
+                        onBookmark={this.onCreateBookmark}
+                        shareData={this.props.shareData}
+                        toggleTranslationScreen= {this.toggleTranslationScreen}
+                        currentPage={currentPage}
+                        toggleTranslation={toggleTranslation}
+                        translationFullscreen={this.state.translationFullscreen}
+                        abovePdf={this.state.abovePdf}
+                      />
+                    </View>
+                  ))}
+                </View>
+              ) : null}
+       
       </>
     );
   }
@@ -832,6 +902,12 @@ const styles = StyleSheet.create({
     flex: 1.8,
     opacity: 0.9,
   },
+
+  header2: {
+    flex: 1,
+    opacity: 0.9,
+  },
+  
   align: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -843,15 +919,17 @@ const styles = StyleSheet.create({
     marginTop: 25,
   },
   pdf: {
-    flex: 1,
-    zIndex: 900,
+    flex: 1.1,
+    zIndex: 1,
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height,
   },
 
   pdfHide: {
     height: 1,
+    zIndex: 1,
     opacity: 0,
+    
   },
   topmessage: {
     position: 'absolute',

@@ -157,6 +157,8 @@ function SocketOverlay({
   };
 
   useEffect(() => {
+
+    setPushLibrary(null)
     const start = async () => {
       console.log('start');
       if (!stream) {

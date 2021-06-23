@@ -87,11 +87,14 @@ function NavHeader({
   setBookmarks,
   storedBookmarks,
   storedNotes,
+  abovePdf,
+  toggleTranslationScreen,
   setNotes,
   numberOfPages,
   onNote,
   onBookmark,
   shareData,
+  translationFullscreen,
   shareChange,
   toggleTranslation
 }) {
@@ -147,7 +150,7 @@ function NavHeader({
 
   const fetchOnlineNotes = () => {
     if (currentUser && libraryType) {
-      console.log('/ssa',page2)
+      
       fetchNotesAsync(
         mushaf.id,
         mushaf.userid,
@@ -291,6 +294,7 @@ function NavHeader({
   };
 
   const onSetPage = page => {
+    console.log('setting page')
     setPage(page, mushaf);
     setTimeout(function () {
       setNotePage({id: mushaf.id, page: page, userid: mushaf.userid});
@@ -446,7 +450,7 @@ function NavHeader({
               </Text>
               {libraryType ? (
                 <Text style={{marginLeft: 10}} onPress={fetchOnlineNotes}>
-                  Page Notes
+                  Current Page Notes
                 </Text>
               ) : null}
             </View>
@@ -541,27 +545,59 @@ function NavHeader({
       </View>
       {toggleTranslation?
       <>
-      <View style={{zIndex:999,flexDirection: 'row', marginTop:-5, marginLeft:Dimensions.get('window').width / 2}}>
+      <View style={{zIndex:999,flexDirection: 'row', marginTop:-5, marginLeft:Dimensions.get('window').width / 5, marginBottom:10}}>
+   
       <Text style={{marginRight:7,color:'#c2b280'}} onPress={()=>setToggleArabic(!toggleArabic)}>Toggle Arabic</Text>
-      <Text style={{color:'#c2b280'}} onPress={()=>setToggleEnglish(!toggleEnglish)}>Toggle English</Text>
+      <Text style={{color:'#c2b280',marginRight:7}} onPress={()=>setToggleEnglish(!toggleEnglish)}>Toggle English</Text>
+      <Text style={{color:'#c2b280'}} onPress={toggleTranslationScreen}>Toggle Fullscreen</Text>
+     
       </View>
-      <ScrollView ref={scrollRef} style={styles.transaltion}> 
+
+      
+
+<View style={{zIndex:999}}></View>
+        <Text onPress={()=>onSetPage(currentPage -1)} style={{marginTop:'50%'}}>⬅️</Text>
+        <Text onPress={()=>onSetPage(currentPage +1)} style={{ marginLeft:'96%' ,marginTop:'-4%' }}>➡️</Text>
+
+      
+      { translationFullscreen?
+      <ScrollView ref={scrollRef} style={ styles.transaltion3}> 
+
 
       {translations[currentPage-2]?
       translations[currentPage-2].map(data => 
 
-       <>
-        <Text style={{marginTop:10, color:'#c2b280',fontSize: 17}}>{data.verse_key}</Text>
+       < View key={data.id}>
+        <Text style={{marginTop:10, marginBottom:10, color:'#c2b280',fontSize: 17}}>{data.verse_key}</Text>
         {toggleArabic?
         <Text style={{fontSize:19}}>{data.text_uthmani}</Text>
         :null}
         { toggleEnglish? 
         <Text>{data.text}</Text>
         :null }
-        </>
+        </View>
       ): null}
 
     </ScrollView>
+      :
+      <ScrollView ref={scrollRef} style={ styles.transaltion}> 
+
+      {translations[currentPage-2]?
+      translations[currentPage-2].map(data => 
+
+       < View key={data.id}>
+        <Text style={{marginTop:10, marginBottom:10, color:'#c2b280',fontSize: 17}}>{data.verse_key}</Text>
+        {toggleArabic?
+        <Text style={{fontSize:19}}>{data.text_uthmani}</Text>
+        :null}
+        { toggleEnglish? 
+        <Text>{data.text}</Text>
+        :null }
+        </View>
+      ): null}
+
+    </ScrollView>
+      }
     </>
     :null}  
   
@@ -625,9 +661,37 @@ const styles = StyleSheet.create({
   transaltion: {
     position: 'absolute',
     marginLeft: 20,
-    marginTop:10,
+    marginTop:15,
     width: Dimensions.get('window').width / 1.1,
     height: Dimensions.get('window').height / 2.5,
+    backgroundColor: 'white',
+    padding: 2,
+    marginBottom: Dimensions.get('window').height / 12,
+    marginRight: 10,
+    borderRadius: 10,
+    zIndex:99
+  },
+
+  transaltion2: {
+    position: 'absolute',
+    marginLeft: 20,
+    marginTop:15,
+    width: Dimensions.get('window').width / 1.1,
+    height: Dimensions.get('window').height / 3,
+    backgroundColor: 'white',
+    padding: 2,
+    marginBottom: Dimensions.get('window').height / 12,
+    marginRight: 10,
+    borderRadius: 10,
+    zIndex:99
+  },
+
+  transaltion3: {
+    position: 'absolute',
+    marginLeft: 20,
+    marginTop:15,
+    width: Dimensions.get('window').width / 1.09,
+    height: Dimensions.get('window').height / 1.28,
     backgroundColor: 'white',
     padding: 2,
     marginBottom: Dimensions.get('window').height / 12,

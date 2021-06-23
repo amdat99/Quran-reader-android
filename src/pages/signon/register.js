@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {signUpPending} from '../../redux/user/user.actions';
+import {signUpPending,emailSignInPending} from '../../redux/user/user.actions';
 
 import uuid from 'react-native-uuid';
 
@@ -19,11 +19,12 @@ import {
   Alert,
 } from 'react-native';
 
-function Register({signUpPending, toggleLogin}) {
+function Register({signUpPending, toggleLogin,emailSignInPending}) {
   const [userName, setDisplayName] = useState(null);
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
   const [confirmPassword, setConfirmPassword] = useState(null);
+  const [emailValid, setEmailValid] = useState(true);
 
   const handleSubmit = async () => {
     if (!confirmPassword || !email || !password || !confirmPassword) {
@@ -33,6 +34,17 @@ function Register({signUpPending, toggleLogin}) {
       return;
     }
 
+   if (!emailValid){
+    Alert.alert(
+      ' Email error',
+      'Please Enter a Valid email',
+      [],
+      {
+        cancelable: true,
+      },
+    );
+    return;
+   } 
     if (password !== confirmPassword) {
       Alert.alert(
         ' password error',
@@ -65,12 +77,33 @@ function Register({signUpPending, toggleLogin}) {
       contentId: uuid.v4(),
       profileId: uuid.v4(),
     });
-    toggleLogin();
+
+    // setTimeout(function(){  signIn();; }, 1000);
+
+   
     // if(error !== null){
     //     alert(error)
     // }
   };
 
+  const signIn = () =>{
+    emailSignInPending(email, password)
+  }
+
+  const validateEmail = (text) => {
+    console.log(text);
+    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+    if (reg.test(text) === false) {
+      setEmailValid(false);
+      setEmail(text)
+      console.log("Email is Not Correct");
+
+    }
+    else {
+      setEmailValid(true);
+     setEmail(text)
+    }
+  }
   return (
     <>
       <View style={styles.container}>
@@ -78,14 +111,15 @@ function Register({signUpPending, toggleLogin}) {
 
         <TextInput
           autoCompleteType="email"
-          placeholder="Enter your email"
-          onChangeText={setEmail}
+          placeholder="Email ID"
+      onChangeText={(text) => validateEmail(text)}
+      value={email}
           style={styles.inputs}
         />
 
         <TextInput
           autoCompleteType="email"
-          placeholder="Enter your name"
+          placeholder="Enter a Username"
           onChangeText={setDisplayName}
           style={styles.inputs}
         />
@@ -152,6 +186,8 @@ const styles = StyleSheet.create({
 
 const mapDispatchToProps = dispatch => ({
   signUpPending: signUpData => dispatch(signUpPending(signUpData)),
+  emailSignInPending: (email, password) =>
+  dispatch(emailSignInPending({email, password})),
 });
 
 export default connect(null, mapDispatchToProps)(Register);

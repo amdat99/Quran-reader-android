@@ -11,10 +11,7 @@ import {
   signOutFailure,
   signUpSuccess,
   signUpFailure,
-  getMessageFailed,
-  sendDirectMessageFailed,
-  getRecievedMessageSuccess,
-  getSentMessageSuccess,
+ emailSignInPending,
   fetchNameSuccess,
   fetchNameFailed,
   setLibraryType,
@@ -105,9 +102,7 @@ export function* signOut() {
 export function* registerUserAsync({
   payload: {userName, password, email, userId, profileId, contentId},
 }) {
-  console.log({
-    payload: {userName, password, email, userId, profileId, contentId},
-  });
+
   try {
     const response = yield fetch(
       'https://quranlive-api.herokuapp.com/adduser',
@@ -127,11 +122,21 @@ export function* registerUserAsync({
       },
     );
     const data = yield response.json();
-    console.log(data);
-    if (data.email) {
-      yield put(signInSuccess(data));
-      yield put(setLibraryType());
-      yield put(fetchCopiesPending(data[0].contentid));
+    console.log('test',data)
+    if(data.routine === '_bt_check_unique'){
+      console.log('exists')
+      Alert.alert(' Already exists', ' The email or username already exists', [], {
+        cancelable: true,
+      });
+      
+    }
+    
+    if (data === 'usercreated') {
+      
+      console.log('ssp',email,password)
+      yield put (emailSignInPending({email: email, password: password}))
+      // yield put(setLibraryType());
+      // yield put(fetchCopiesPending(data[0].contentid));
     }
   } catch (e) {
     yield put(signUpFailure(e));

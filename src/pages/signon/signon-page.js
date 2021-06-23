@@ -28,7 +28,7 @@ function SignOn({currentUser, setRoom, navigation, pushLibrary}) {
   const [requestNotSent, setRequestNotSent] = useState(true);
 
 useEffect(() => {
-  if(pushLibrary){
+  if(pushLibrary !== null){
  navigation.push('library');
   }
 },[pushLibrary])
