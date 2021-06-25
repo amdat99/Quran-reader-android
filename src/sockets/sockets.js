@@ -2,7 +2,7 @@ import io from 'socket.io-client';
 let socket;
 
 export const initiateSocket = room => {
-  socket = io('https://quranlive-api.herokuapp.com/', {
+  socket = io('http://192.248.153.241:3000/', {
     // socket = io("http://localhost:4000/", {
     transports: ['websocket'],
   });
@@ -34,6 +34,7 @@ export const sendMessage = (name, message, room, profile) => {
 };
 
 export const enterAudioLink = data => {
+  if (!socket) return;
   socket.on('audiolink', message => {
     console.log('audio data received');
     return data(null, message);

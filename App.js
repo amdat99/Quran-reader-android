@@ -14,6 +14,7 @@ import SignOn from './src/pages/signon/signon-page';
 import Library from './src/pages/library/Library';
 import Mushaf from './src/pages/mushaf/Mushaf';
 import SocketOverlay from './src/pages/socket-overlay/Socket-overlay';
+import AudioLink from './src/pages/socket-overlay/Audiolink';
 
 const Stack = createStackNavigator();
 
@@ -22,6 +23,7 @@ export default function App() {
     <Provider store={store}>
       <PersistGate persistor={persistor}>
         <SocketOverlay />
+        {/* <AudioLink /> */}
         <NavigationContainer>
           <Stack.Navigator>
             <Stack.Screen

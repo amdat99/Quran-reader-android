@@ -36,7 +36,7 @@ export function* signInWithEmail({payload: {email, password}}) {
   try {
     // const response = yield fetch('http://192.168.11.177:3000/fetchuser',{
     const response = yield fetch(
-      'https://quranlive-api.herokuapp.com/fetchuser',
+      'http://192.248.153.241:3000/fetchuser',
       {
         method: 'post',
         headers: {'Content-Type': 'application/json'},
@@ -44,7 +44,7 @@ export function* signInWithEmail({payload: {email, password}}) {
           email: email,
           password: password,
         }),
-      },
+      }
     );
     const data = yield response.json();
     console.log(data);
@@ -105,7 +105,7 @@ export function* registerUserAsync({
 
   try {
     const response = yield fetch(
-      'https://quranlive-api.herokuapp.com/adduser',
+      'http://192.248.153.241:3000/adduser',
       {
         // const response = yield fetch('http://192.168.11.177:3000/adduser',{
         method: 'post',

@@ -529,23 +529,24 @@ function NavHeader({
               onPress={() => addPageNoteData(mushaf)}>
               enter{' '}
             </Text>
-            <TextInput onChangeText={setNoteTitle} placeholder="note title" />
-
-            <ScrollView>
+            <TextInput style={{bottom:30,marginBottom:20,}} onChangeText={setNoteTitle} placeholder="note title" />
+            <View style={{position: 'absolute', top: 10, marginTop:20, zIndex: 998,}}>
+            <ScrollView >
               <TextInput
                 multiline={true}
-                numberOfLines={4}
+                numberOfLines={5}
                 style={styles.noteInput}
                 onChangeText={setNote}
                 placeholder="type note"
               />
             </ScrollView>
+            </View>
           </View>
         ) : null}
       </View>
       {toggleTranslation?
       <>
-      <View style={{zIndex:999,flexDirection: 'row', marginTop:-5, marginLeft:Dimensions.get('window').width / 5, marginBottom:10}}>
+      <View style={{zIndex:999,flexDirection: 'row', marginTop:-4, marginLeft:Dimensions.get('window').width / 5, marginBottom:10}}>
    
       <Text style={{marginRight:7,color:'#c2b280'}} onPress={()=>setToggleArabic(!toggleArabic)}>Toggle Arabic</Text>
       <Text style={{color:'#c2b280',marginRight:7}} onPress={()=>setToggleEnglish(!toggleEnglish)}>Toggle English</Text>
@@ -555,9 +556,13 @@ function NavHeader({
 
       
 
-<View style={{zIndex:999}}></View>
-        <Text onPress={()=>onSetPage(currentPage -1)} style={{marginTop:'50%'}}>⬅️</Text>
-        <Text onPress={()=>onSetPage(currentPage +1)} style={{ marginLeft:'96%' ,marginTop:'-4%' }}>➡️</Text>
+<View style={{zIndex:999,marginTop:'50%',position: 'absolute'}}></View> 
+
+<Text onPress={()=>onSetPage(currentPage +1)} style={{ marginLeft:'96%' ,top: 20  }}>➡️</Text>
+
+        <Text style={{position:'absolute', top:40}} onPress={()=>onSetPage(currentPage -1)} >⬅️</Text>
+      
+       
 
       
       { translationFullscreen?
@@ -570,10 +575,10 @@ function NavHeader({
        < View key={data.id}>
         <Text style={{marginTop:10, marginBottom:10, color:'#c2b280',fontSize: 17}}>{data.verse_key}</Text>
         {toggleArabic?
-        <Text style={{fontSize:19}}>{data.text_uthmani}</Text>
+        <Text style={ translationFullscreen ? styles.translationText2 : styles.translationText}>{data.text_uthmani}</Text>
         :null}
         { toggleEnglish? 
-        <Text>{data.text}</Text>
+        <Text style ={translationFullscreen? styles.translationText : null}>{data.text}</Text>
         :null }
         </View>
       ): null}
@@ -588,10 +593,10 @@ function NavHeader({
        < View key={data.id}>
         <Text style={{marginTop:10, marginBottom:10, color:'#c2b280',fontSize: 17}}>{data.verse_key}</Text>
         {toggleArabic?
-        <Text style={{fontSize:19}}>{data.text_uthmani}</Text>
+        <Text style={ translationFullscreen ? styles.translationText2 : styles.translationText}>{data.text_uthmani}</Text>
         :null}
         { toggleEnglish? 
-        <Text>{data.text}</Text>
+        <Text style ={translationFullscreen? styles.translationText : null}>{data.text}</Text>
         :null }
         </View>
       ): null}
@@ -649,7 +654,7 @@ const styles = StyleSheet.create({
   },
   addNote: {
     marginLeft: 20,
-    width: Dimensions.get('window').width / 1.7,
+    width: Dimensions.get('window').width / 1.5,
     height: Dimensions.get('window').height / 4,
     backgroundColor: 'white',
     padding: 2,
@@ -660,14 +665,14 @@ const styles = StyleSheet.create({
 
   transaltion: {
     position: 'absolute',
-    marginLeft: 20,
+    marginLeft: 15,
     marginTop:15,
-    width: Dimensions.get('window').width / 1.1,
+    width: Dimensions.get('window').width / 1.12,
     height: Dimensions.get('window').height / 2.5,
     backgroundColor: 'white',
     padding: 2,
-    marginBottom: Dimensions.get('window').height / 12,
-    marginRight: 10,
+   
+    marginRight: 15,
     borderRadius: 10,
     zIndex:99
   },
@@ -676,26 +681,26 @@ const styles = StyleSheet.create({
     position: 'absolute',
     marginLeft: 20,
     marginTop:15,
-    width: Dimensions.get('window').width / 1.1,
+    width: Dimensions.get('window').width / 1.12,
     height: Dimensions.get('window').height / 3,
     backgroundColor: 'white',
     padding: 2,
     marginBottom: Dimensions.get('window').height / 12,
-    marginRight: 10,
+    marginRight: 15,
     borderRadius: 10,
     zIndex:99
   },
 
   transaltion3: {
     position: 'absolute',
-    marginLeft: 20,
+    marginLeft: 15,
     marginTop:15,
-    width: Dimensions.get('window').width / 1.09,
+    width: Dimensions.get('window').width / 1.12,
     height: Dimensions.get('window').height / 1.28,
     backgroundColor: 'white',
     padding: 2,
     marginBottom: Dimensions.get('window').height / 12,
-    marginRight: 10,
+      marginRight: 15,
     borderRadius: 10,
     zIndex:99
   },
@@ -719,8 +724,8 @@ const styles = StyleSheet.create({
     color: 'red',
   },
   noteInput: {
-    maxWidth: Dimensions.get('window').width / 1.8,
-
+    maxWidth: Dimensions.get('window').width / 1.55,
+    marginBottom:70,
     flexWrap: 'wrap',
   },
   notelinks: {
@@ -729,6 +734,13 @@ const styles = StyleSheet.create({
     fontSize: 10,
     borderRadius: 10,
   },
+
+  translationText:{
+    fontSize:16
+  },
+  translationText2:{
+    fontSize:25
+  }
 });
 
 const mapsStateToProps = createStructuredSelector({

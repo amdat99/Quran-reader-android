@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import PushNotification,{Importance} from 'react-native-push-notification';
-
+import AudioLink from './Audiolink';
 import {connect} from 'react-redux';
 import {createStructuredSelector} from 'reselect';
 import {
@@ -50,6 +50,14 @@ import {
 } from 'react-native';
 import {set} from 'react-native-reanimated';
 
+export const getOrientation = () => {
+  if (Dimensions.get('window').screen.width > Dimensions.get('window').screen.height) {
+    return 'LANDSCAPE';
+  }else {
+    return 'PORTRAIT';
+  }
+}
+
 function SocketOverlay({
   currentUser,
   room,
@@ -94,14 +102,19 @@ function SocketOverlay({
 
     onNotification: function (notification) {
       console.log('NOTIFICATION:', notification);
-      console.log(notification.id,'ssaososa')
+      
+      console.log(notification.messageId)
+      if(notification.title === 'user left'){
+        return
+      }
+      if(notification.messageId !== 2 || notification.messageId !==1){
       setLastProfile({id:notification.messageId.toString(), name:notification.title}); 
       openMessage();
-      // }
+      }
       
-      notification.id !==1?
+     
       setPushLibrary(Math.random())
-      : null
+     
     },
       // process the notification
 
@@ -226,10 +239,10 @@ function SocketOverlay({
         sendMessage('copy share request', onReq.name + 'wants to copy share',2 )
         }
       }
-      if (onReq.type === 'sharejoined' && onReq.name !== currentUser[0].name) {
-        console.log('both users read to share');
-        createOffer();
-      }
+      // if (onReq.type === 'sharejoined' && onReq.name !== currentUser[0].name) {
+      //   console.log('both users read to share');
+      //   createOffer();
+      // }
 
       if (onReq.type === 'reject' && onReq.name !== currentUser[0].name) {
         Alert.alert('Rejection', `${onReq.name} refused you request`, [], {
@@ -267,21 +280,21 @@ function SocketOverlay({
       if (onReq.type === 'onnote') {
         setShareChange({type: 'note', reset: Math.random()});
       }
-      if (onReq.type === 'offer' && onReq.name !== currentUser[0].name) {
-        console.log('received offer');
-        recieveOffer(onReq.payload);
-      }
-      if (onReq.type === 'answer' && onReq.name !== currentUser[0].name) {
-        console.log('received answer');
+      // if (onReq.type === 'offer' && onReq.name !== currentUser[0].name) {
+      //   console.log('received offer');
+      //   recieveOffer(onReq.payload);
+      // }
+      // if (onReq.type === 'answer' && onReq.name !== currentUser[0].name) {
+      //   console.log('received answer');
 
-        receiveAnwer(onReq.payload);
-      }
-      if (onReq.type === 'candidate' && onReq.name !== currentUser[0].name) {
-        console.log('received candidate');
-        setTimeout(function () {
-          addCandidate(onReq.payload);
-        }, 1000);
-      }
+      //   receiveAnwer(onReq.payload);
+      // }
+      // if (onReq.type === 'candidate' && onReq.name !== currentUser[0].name) {
+      //   console.log('received candidate');
+      //   setTimeout(function () {
+      //     addCandidate(onReq.payload);
+      //   }, 1000);
+      // }
     }
   }, [onReq]);
 
@@ -340,11 +353,11 @@ function SocketOverlay({
     };
   };
 
+
+
   return (
     <View style={{position: 'absolute', top: 100, zIndex: 999}}>
-      {stream ? <RTCView streamURL={stream.toURL()} /> : null}
-
-      {rStream ? <RTCView streamURL={rStream.toURL()} /> : null}
+      <AudioLink  currentUser={currentUser} room={room}/>
     </View>
   );
 }

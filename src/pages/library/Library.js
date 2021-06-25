@@ -332,7 +332,7 @@ const resetMessage = () => {
     // await setShareData({id:id, userid:userid,change:Math.random()});
     setCurrentShareMushaf([shareCopy])
   await setRoom(profile)
-    await sendAudioLink(shareCopy,currentUser[0].name,'startshare')
+    await setTimeout(function(){sendAudioLink(shareCopy,currentUser[0].name,'startshare') }, 1000);
    await onShare(false);
     await onEnterCopy(shareCopy)
      await setTimeout(function(){ onShareStatus()  }, 1000);
@@ -447,7 +447,7 @@ return (
   {userCount?
   currentUser ? (
     <View>
-      <Text style={{ position: 'absolute',left: Dimensions.get('window').width/5.5}} onPress={onSignOut}> sign out</Text>
+      <Text style={{ position: 'absolute',left: 50}} onPress={onSignOut}> sign out</Text>
     </View>
     ) : (
       <Text onPress={() => navigation.navigate('signon')}>
@@ -457,8 +457,8 @@ return (
     
     {currentUser?
     toggleCopiesType ? 
-      <Text onPress={toggleLibraries} style={{ position: 'relative' , left:Dimensions.get('window').width/20,marginTop:35,backgroundColor: '#e8d087', borderRadius:30,padding:2}} onPress={toggleLibraries}> Set Offline Library </Text>
-      :<Text onPress={toggleLibraries} style={{ position: 'relative' , left:Dimensions.get('window').width/20,marginTop:35,backgroundColor: '#e8d087', borderRadius:30,padding:2}} onPress={toggleLibraries}> Set Online Library </Text>
+      <Text onPress={toggleLibraries} style={{ position: 'relative' , marginLeft: 10,marginTop:35,backgroundColor: '#e8d087', borderRadius:30,padding:2}} onPress={toggleLibraries}> Set Offline Library </Text>
+      :<Text onPress={toggleLibraries} style={{ position: 'relative' , marginLeft:10,marginTop:35,backgroundColor: '#e8d087', borderRadius:30,padding:2}} onPress={toggleLibraries}> Set Online Library </Text>
     :null}
 
     {userCount ?

@@ -14,6 +14,7 @@ import {updateCounter} from './utils';
 import {updateStatus} from '../library/utils';
 import Pdf from 'react-native-pdf';
 
+import {getOrientation } from '../socket-overlay/Socket-overlay'
 import uuid from 'react-native-uuid';
 
 import {connect} from 'react-redux';
@@ -78,6 +79,7 @@ class Mushaf extends React.Component {
       toggleAddPageNotes: false,
       togglePageNotes: false,
       showMenu: false,
+      soundPage: '',
       currentPage: '',
       currentMushaf: null,
       toggleAudio: false,
@@ -166,11 +168,15 @@ class Mushaf extends React.Component {
     this.pagesRead = 1;
   }
 
-  startSound = () => {
+  startSound =  async ()  => {  
+    await this.setState({soundPage: this.state.currentPage})
+    await this.initialiseAudio()
+  }
+     initialiseAudio = () => {   
+      console.log(this.state.soundPage)
     if (this.sound1) this.sound1.release();
-    if (this.state.currentPage < 10) {
-      this.sound1 = new Sound(
-        `https://aswaatulqurraa.com/files/Pages/Abu%20Bakr%20al%20Shatri%20(13%20Liner)/1/00${this.state.currentPage}.mp3`,
+    this.sound1 = new Sound(
+        `http://192.248.153.241:3000/assets/page-audio/0${this.state.soundPage}.mp3`,
         // `https://quran-live.s3.eu-west-2.amazonaws.com/audio1/0${this.state.currentPage}.mp3`,
         Sound.MAIN_BUNDLE,
 
@@ -189,33 +195,12 @@ class Mushaf extends React.Component {
             this.sound1.release();
           });
           this.setState({audioStart: true});
-        },
-      );
-    } else {
-      this.sound1 = new Sound(
-        `https://aswaatulqurraa.com/files/Pages/Abu%20Bakr%20al%20Shatri%20(13%20Liner)/1/0${this.state.currentPage}.mp3`,
-        // `https://quran-live.s3.eu-west-2.amazonaws.com/audio1/0${this.state.currentPage}.mp3`,
-        Sound.MAIN_BUNDLE,
-
-        (error, sound) => {
-          if (error) {
-            console.log('error' + error.message);
-            return;
-          }
-
-          this.sound1.setVolume(10);
-          this.duration = this.sound1.getDuration();
-
-          console.log(this.duration);
-
-          this.sound1.play(() => {
-            this.sound1.release();
-          });
-          this.setState({audioStart: true});
+        
         },
       );
     }
-  };
+    
+
   stopSound = () => {
     if (this.sound1) {
       this.sound1.stop(() => {
@@ -305,7 +290,7 @@ class Mushaf extends React.Component {
   };
   loop = async () => {
     if (this.currentPosition >= this.duration - 1) {
-      await this.setState({currentPage: this.state.currentPage + 1});
+      await this.setState({soundPage: this.state.soundPage + 1});
       this.startSound();
     }
 
@@ -538,7 +523,7 @@ this.props.shareData ?
               {this.state.showMenu  && this.state.abovePdf ? (
                 <View style={styles.header}>
                   { !this.state.translationFullscreen ?
-                    <Text onPress={() => this.setState({abovePdf: !this.state.abovePdf})} style={styles.links}>
+                    <Text onPress={() => this.setState({abovePdf: !this.state.abovePdf, translationFullscreen:false})} style={styles.links}>
                   {' '}
                   🔃                </Text>
   :null}
@@ -738,8 +723,8 @@ this.props.shareData ?
           </View>
           {this.state.showMenu && !this.state.abovePdf ? (
                 <View style={styles.header2}>
-                  {this.state.translationFullscreen?
-                  <Text onPress={() => this.setState({abovePdf: !this.state.abovePdf})} style={styles.links}>
+                  {!this.state.translationFullscreen?
+                  <Text onPress={() => this.setState({abovePdf: !this.state.abovePdf,translationFullscreen:false})} style={styles.links}>
                   {' '}
                   🔃  
                 </Text>
@@ -892,7 +877,7 @@ const styles = StyleSheet.create({
     opacity: 0.9,
     borderRadius: 300,
     padding: 7,
-    marginLeft: Dimensions.get('window').width / 5.1,
+    left: Dimensions.get('window').width / 5.1,
   },
 
   controls: {

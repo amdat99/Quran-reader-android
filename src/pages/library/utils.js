@@ -2,7 +2,7 @@ export const getCount = async () => {
   console.log('getting user count');
   try {
     const response = await fetch(
-      'https://quranlive-api.herokuapp.com/fetchcount',
+      'http://192.248.153.241:3000/fetchcount',
       {
         //  const response = await fetch('http://192.168.11.177:3000/fetchcount',{
         method: 'post',
@@ -20,7 +20,7 @@ export const fetchProfiles = async () => {
   console.log('getting profile');
   try {
     const response = await fetch(
-      'https://quranlive-api.herokuapp.com/fetchprofiles',
+      'http://192.248.153.241:3000/fetchprofiles',
       {
         //  const response = await fetch('http://192.168.11.177:3000/fetchcount',{
         method: 'post',
@@ -39,7 +39,7 @@ export const updateStatus = async (status, userid) => {
   console.log(status);
   try {
     const response = await fetch(
-      'https://quranlive-api.herokuapp.com/updatestatus',
+      'http://192.248.153.241:3000/updatestatus',
       {
         //  const response = await fetch('http://192.168.11.177:3000/fetchcount',{
         method: 'put',
@@ -61,7 +61,7 @@ export const deleteCopy = async id => {
   console.log('deleting copies');
   try {
     const response = await fetch(
-      'https://quranlive-api.herokuapp.com/deletecopy',
+      'http://192.248.153.241:3000/deletecopy',
       {
         //  const response = await fetch('http://192.168.11.177:3000/deletecopy',{
         method: 'post',
