@@ -13,6 +13,10 @@ import {
   enterChat,
   sendAudioLink,
   enterAudioLink,
+  enterOfferOrAnswer,
+  sendOfferOrAnswer,
+  enterCandidate,
+  sendCand
 } from '../../sockets/sockets';
 import {setShareChange, setSharePage, setLastProfile} from '../../redux/page/page.actions';
 import {
@@ -79,6 +83,8 @@ function SocketOverlay({
   const [remoteSdp, setRemoteSdp] = useState(null);
   const [candidates, setCandidates] = useState(null);
   const [lastCopy, setLastCopy] = useState(null);
+  const [onSdp, setOnSdp] = useState(null);
+  const [sender, setSender] = useState(false);
 
   const configuration = {iceServers: [{url: 'stun:stun.l.google.com:19302'}]};
   const pc = new RTCPeerConnection(configuration);
@@ -97,23 +103,21 @@ function SocketOverlay({
   );
   PushNotification.configure({
     onRegister: function (token) {
-      console.log('TOKEN:', token);
+
     },
 
     onNotification: function (notification) {
-      console.log('NOTIFICATION:', notification);
-      
-      console.log(notification.messageId)
+    
+
       if(notification.title === 'user left'){
         return
       }
-      if(notification.messageId !== 2 || notification.messageId !==1){
+      if(notification.title !== 'copy share request'){
       setLastProfile({id:notification.messageId.toString(), name:notification.title}); 
       openMessage();
       }
       
-     
-      setPushLibrary(Math.random())
+     setPushLibrary(Math.random())
      
     },
       // process the notification
@@ -124,11 +128,6 @@ function SocketOverlay({
 
     // (optional) Called when Registered Action is pressed and invokeApp is false, if true onNotification will be called (Android)
     onAction: function (notification) {
-      console.log('ACTION:', notification.action);
-      console.log('NOTIFICATION:', notification);
-      // if(notification.id !== 1 || notification.id !==2){
-     
-      // process the action
       
     },
 
@@ -228,21 +227,48 @@ function SocketOverlay({
       if (err) return;
       setOnReq(data);
     });
+
+   
   }, [room]);
+
+
+  // useEffect(() => {
+
+  //   if (onSdp && currentUser) {
+  //   console.log(onSdp.payload)
+    
+  //   if ( onSdp.name !== currentUser[0].name) {
+  //     recieveOffer(onSdp.payload)
+  //   }}
+  // },[onSdp])
+
+  // useEffect(() => {
+
+  //   if (candidates && currentUser) {
+  //     console.log(candidates.payload)
+  //     if ( onSdp.name !== currentUser[0].name) {
+  //       addCandidate(candidates.payload)
+  //     }}
+
+  // },[candidates])
+
 
   useEffect(() => {
     if (onReq && currentUser) {
-      console.log('currentType:', onReq.type);
+
+      console.log('currentp:',onReq.payload)
+
       if (onReq.type === 'startshare') {
         setShareData({data: onReq.payload, name: onReq.name});
         if(currentUser[0].name !== onReq.name){
-        sendMessage('copy share request', onReq.name + 'wants to copy share',2 )
+        sendMessage('copy share request', onReq.name + ' wants to copy share',2 )
         }
       }
-      // if (onReq.type === 'sharejoined' && onReq.name !== currentUser[0].name) {
-      //   console.log('both users read to share');
-      //   createOffer();
-      // }
+      if (onReq.type === 'sharejoined' && onReq.name !== currentUser[0].name) {
+        console.log('both users read to share');
+        createOffer();
+        sendCand()
+      }
 
       if (onReq.type === 'reject' && onReq.name !== currentUser[0].name) {
         Alert.alert('Rejection', `${onReq.name} refused you request`, [], {
@@ -280,23 +306,35 @@ function SocketOverlay({
       if (onReq.type === 'onnote') {
         setShareChange({type: 'note', reset: Math.random()});
       }
-      // if (onReq.type === 'offer' && onReq.name !== currentUser[0].name) {
-      //   console.log('received offer');
-      //   recieveOffer(onReq.payload);
-      // }
-      // if (onReq.type === 'answer' && onReq.name !== currentUser[0].name) {
-      //   console.log('received answer');
+      if (onReq.type === 'offer' && onReq.name !== currentUser[0].name) {
+        console.log('received offer');
+        
+        recieveOffer(onReq.payload);
+      }
+      if (onReq.type === 'answer' && onReq.name !== currentUser[0].name) {
+        console.log('received answer');
 
-      //   receiveAnwer(onReq.payload);
-      // }
-      // if (onReq.type === 'candidate' && onReq.name !== currentUser[0].name) {
-      //   console.log('received candidate');
-      //   setTimeout(function () {
-      //     addCandidate(onReq.payload);
-      //   }, 1000);
-      // }
+        receiveAnwer(onReq.payload);
+      }
+      if (onReq.type === 'candidate' && onReq.name !== currentUser[0].name) {
+        console.log('received candidate');
+        setTimeout(function () {
+          addCandidate(onReq.payload);
+        }, 1000);
+      }
     }
   }, [onReq]);
+
+  useEffect(() => {
+    pc.oniceconnectionstatechange = (e) => {
+      console.log(e);
+    };
+
+ pc.onaddstream = (e) => {
+      console.log('remotevideo',rStream);
+     rStream.current.srcObject = e.stream;
+    };
+  })
 
   pc.onaddstream = e => {
     console.log(rStream);
@@ -308,12 +346,12 @@ function SocketOverlay({
   };
 
   const createOffer = async () => {
-    console.log('Offer');
-
-    pc.createOffer({offerToReceiveVideo: 1}).then(sdp => {
+  console.log('Offer');
+await setSender(false)
+await pc.createOffer({offerToReceiveVideo: 1}).then(sdp => {
       pc.setLocalDescription(sdp);
 
-      sendAudioLink(sdp, currentUser[0].name, 'offer');
+      sendOfferOrAnswer(sdp, currentUser[0].name);
     });
   };
 
@@ -322,13 +360,14 @@ function SocketOverlay({
     pc.createAnswer({offerToReceiveVideo: 1}).then(sdp => {
       pc.setLocalDescription(sdp);
 
-      sendAudioLink(sdp, currentUser[0].name, 'answer');
+      sendOfferOrAnswer(sdp, currentUser[0].name);
     });
   };
 
   const recieveOffer = remoteSdp => {
     pc.setRemoteDescription(new RTCSessionDescription(remoteSdp));
     setTimeout(() => createAnswer(), 1000);
+    setTimeout(() => sendCand(), 1000);
   };
   const receiveAnwer = remoteSdp => {
     pc.setRemoteDescription(new RTCSessionDescription(remoteSdp));
@@ -348,7 +387,7 @@ function SocketOverlay({
       if (e.candidate) {
         console.log('senfing cand');
         console.log(JSON.stringify(e.candidate));
-        sendAudioLink(e.candidate, currentUser[0].name, 'candidate');
+        sendCand(e.candidate, currentUser[0].name, );
       }
     };
   };
@@ -357,7 +396,10 @@ function SocketOverlay({
 
   return (
     <View style={{position: 'absolute', top: 100, zIndex: 999}}>
-      <AudioLink  currentUser={currentUser} room={room}/>
+           {/* {stream ? <RTCView streamURL={stream.toURL()} /> : null}
+
+{rStream? <RTCView streamURL={rStream.toURL()} /> : null}  */}
+      <AudioLink  currentUser={currentUser} room={room} sender={sender}/>
     </View>
   );
 }

@@ -67,6 +67,7 @@ function MessageBox({
 
       <TextInput
         placeholder={`message ${lastProfile.name} `}
+        placeholderTextColor ='#383a3d'
         onChangeText={setOnMessage}
       />
 

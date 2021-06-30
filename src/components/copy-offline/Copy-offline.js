@@ -40,7 +40,7 @@ function CopyOffline({
               color: '#c2b280',
               zIndex: 88,
               marginLeft: 40,
-              marginTop: -10,
+              marginTop: 3,
               backgroundColor:'white',
               borderRadius:20,
               padding: 2
@@ -55,7 +55,7 @@ function CopyOffline({
               color: '#c2b280',
               zIndex: 88,
               marginLeft: 40,
-              marginTop: 14,
+              marginTop: 23,
               backgroundColor:'white',
               borderRadius:20,
               padding: 2
@@ -71,7 +71,7 @@ function CopyOffline({
           setShowDelete(!showDelete);
         }}
         delayLongPress={500}>
-        <Text style={{marginLeft: 30, position: 'relative', top: 30}}>
+        <Text style={{marginLeft: 30, position: 'relative', top: 40}}>
           {mushaf.title}
         </Text>
         <Image
@@ -88,7 +88,7 @@ function CopyOffline({
       </TouchableOpacity>
       {showDelete ? (
         <Text
-          style={{marginLeft: 50, color: 'red', zIndex: 88}}
+          style={{marginLeft: 50, color: 'red', zIndex: 88,position: 'relative',bottom:3}}
           onPress={() => deleteM(mushaf)}>
           Delete
         </Text>
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
   image: {
     width: 85,
     height: 110,
-    marginTop: 30,
+    marginTop: 40,
     marginLeft: 30,
   },
   options: {

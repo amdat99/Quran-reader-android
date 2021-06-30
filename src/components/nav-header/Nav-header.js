@@ -546,7 +546,7 @@ function NavHeader({
       </View>
       {toggleTranslation?
       <>
-      <View style={{zIndex:999,flexDirection: 'row', marginTop:-4, marginLeft:Dimensions.get('window').width / 5, marginBottom:10}}>
+      <View style={translationFullscreen? styles.translationToggles2 : styles.translationToggles}>
    
       <Text style={{marginRight:7,color:'#c2b280'}} onPress={()=>setToggleArabic(!toggleArabic)}>Toggle Arabic</Text>
       <Text style={{color:'#c2b280',marginRight:7}} onPress={()=>setToggleEnglish(!toggleEnglish)}>Toggle English</Text>
@@ -666,7 +666,6 @@ const styles = StyleSheet.create({
   transaltion: {
     position: 'absolute',
     marginLeft: 15,
-    marginTop:15,
     width: Dimensions.get('window').width / 1.12,
     height: Dimensions.get('window').height / 2.5,
     backgroundColor: 'white',
@@ -680,7 +679,7 @@ const styles = StyleSheet.create({
   transaltion2: {
     position: 'absolute',
     marginLeft: 20,
-    marginTop:15,
+  
     width: Dimensions.get('window').width / 1.12,
     height: Dimensions.get('window').height / 3,
     backgroundColor: 'white',
@@ -740,6 +739,14 @@ const styles = StyleSheet.create({
   },
   translationText2:{
     fontSize:25
+  },
+  translationToggles:{
+    zIndex:999,flexDirection: 'row', marginTop:-20, marginLeft:Dimensions.get('window').width / 5, marginBottom:10
+
+  },
+  translationToggles2:{
+    zIndex:999,flexDirection: 'row', marginTop:-4, marginLeft:Dimensions.get('window').width / 5, marginBottom:10
+    
   }
 });
 

@@ -44,7 +44,7 @@ import {
   Dimensions
 } from 'react-native';
 
-import {getCount,deleteCopy,fetchProfiles,updateStatus} from './utils'
+import {getCount,deleteCopy,fetchProfiles,updateStatus,fetchProfilesNum} from './utils'
 import {enterOnCounter, enterProfileChange,sendAudioLink, sendProfileChange, initiateSocket, enterChat,disconnectSocket} from '../../sockets/sockets'
 
 import { add } from 'react-native-reanimated';
@@ -125,12 +125,15 @@ const[searchField, setSearchField] = useState('')
 
 // },[enterLibrary])
 
+useEffect(() =>{
+  setToggleProfiles(false);
+},[])
 
  useEffect(() =>{
    
    setTimeout(function(){  console.log('fetch profiles'); fetchProfiles().then(data => setProfileData(data)) }, 1000);
-
-   setTimeout(function(){  getOnlineNum() }, 2000);
+   setTimeout(function(){  console.log('fetch profiles num'); fetchProfilesNum().then(data => setProfileNumber(data)) }, 1500);
+  
  },
  [profileChange, setProfileChange])
 
@@ -174,11 +177,7 @@ const[searchField, setSearchField] = useState('')
   
   },[currentUser])
 
-  useEffect(() =>{
-    if(profileData){
-         getOnlineNum()
-    }
-  },[profileData, setProfileData])
+
 
   useEffect(() =>{ 
 
@@ -196,6 +195,7 @@ const[searchField, setSearchField] = useState('')
         if (err) return;
         console.log('profiles',data)
                 setProfileChange(data)
+
         
       })
 
@@ -205,9 +205,6 @@ const[searchField, setSearchField] = useState('')
 useEffect(() =>{
     if(currentUser){
       fetchCopiesPending(currentUser[0].contentid)
-      
-
-      
       setToggleCopiesType(true)
     }
   }
@@ -373,17 +370,17 @@ const resetMessage = () => {
       updateStatus('praying',currentUser[0].userid)
       sendProfileChange()
     }}
-const getOnlineNum = () => {
+// const getOnlineNum = () => {
  
-if(profileData){
-    profileData.map(profile =>{
-   let online = 0
-   if(profile.status === 'online'||profile.status === 'praying'){
-     online = online +1
-   }
-   setProfileNumber(online)
-  })}
-}
+// if(profileData){
+//     profileData.map(profile =>{
+//    let online = 0
+//    if(profile.status === 'online'||profile.status === 'praying'){
+//      online = online +1
+//    }
+//    setProfileNumber(online)
+//   })}
+// }
 
 
  const toggleLibraries = () => {
@@ -393,13 +390,6 @@ if(profileData){
   let minutes = Math.floor(time / 60);
   let seconds = time - minutes * 60;
 
-  const onNotSignedIn = () => {
-  Alert.alert(' live chat', ' please sign in to send messages', [], {
-    cancelable: true,
-   }) 
-
-   setShowMessage(false)
-}
 
 const toggleTargets = () => {
   setShowTargets(!showTargets)
@@ -485,7 +475,7 @@ return (
    
     <Text style={{fontSize: 11,marginTop:4}}>choose user to copy share with:</Text>
   </>
-  <TextInput onChangeText={setSearchField} placeholder={'search user'}/>
+  <TextInput onChangeText={setSearchField} placeholderTextColor ='#383a3d' placeholder={'search user'}/>
   <Text onPress={()=>setSearchField('')} style={{color: 'red',position: 'relative',bottom:15,marginLeft:3,fontSize:11}}>Clear</Text>
     {profileData?   
     filteredProfiles().map(profile=>
@@ -564,25 +554,27 @@ return (
   <View style={styles.profile}>
       
       {currentUser && toggleProfiles  && lastMessage?
-          <Text style={{fontSize:9,}}> last message: {lastMessage.message} </Text>:null}
+          <Text style={{fontSize:10,}}> last message: {lastMessage.message} </Text>:null}
           
-          { toggleProfiles?<Text  style={{color:'#c2b280', fontSize:20}}onPress={() =>setToggleProfiles(!toggleProfiles)}>Profiles -</Text>
-          : <Text style={{color:'#c2b280', fontSize:20}} onPress={() =>setToggleProfiles(!toggleProfiles)}>Profiles +</Text>}
+          { toggleProfiles?<View style={{flex:1, flexDirection: 'row'}}><Text  style={{color:'#c2b280', fontSize:14}}onPress={() =>setToggleProfiles(!toggleProfiles)}>Close Profiles </Text>
+          </View>
+          : <Text style={{color:'#c2b280', fontSize:14}} onPress={() =>setToggleProfiles(!toggleProfiles)}>Open Profiles </Text>}
                   
           <Text>{profileNumber} users online</Text>
-   <ScrollView>
-           {toggleProfiles?
-           <TextInput onChangeText={setSearchField} placeholder={'search user'}/>
-           :null}
+ 
+           {toggleProfiles?  
+           <ScrollView style={{ height: Dimensions.get('window').height /1.5}}>
+           <TextInput onChangeText={setSearchField} placeholderTextColor ='#383a3d' placeholder={'search user'}/>
+          
     {profileData ?
       filteredProfiles().map(profile=>
-      toggleProfiles? 
+   
       
-      <Profiles  currentUser={currentUser} setRoom={setRoom} openMessage={openMessage} data={profile} setLastProfile ={setLastProfile}/> : null
+      <Profiles  currentUser={currentUser} setRoom={setRoom} openMessage={openMessage} data={profile} setLastProfile ={setLastProfile}/> 
             )
-      :null}
+      : null}
     </ScrollView>
-  
+    :null}
   </View>
   :null}
 
@@ -594,11 +586,11 @@ return (
 
   {showTargets?
     <View style={styles.target}>
-      <Text  onPress={toggleTargets}>x</Text>
-      <Text>Add Prayer targets</Text>
-        <TextInput   keyboardType="numeric" placeholder ='How many pages do want to read' onChangeText={setTargetPages} />
-        <TextInput   keyboardType="numeric" placeholder ='How many minutes do you want to pray for' onChangeText={setTargetTime} />
-      <Text onPress={onSetTargets}>Add</Text>
+      <Text style={{color:'red',marginLeft:7}}  onPress={toggleTargets}>close</Text>
+      <Text style={{marginLeft:7}}>Add Prayer targets</Text>
+        <TextInput   keyboardType="numeric"  placeholderTextColor ='#383a3d' placeholder ='How many pages do want to read' onChangeText={setTargetPages} />
+        <TextInput   keyboardType="numeric"   placeholderTextColor ='#383a3d' placeholder ='How many minutes do you want to pray for' onChangeText={setTargetTime} />
+      <Text style={{marginLeft:7,backgroundColor:'#c2b280',borderRadius:20,padding:2, width:60, textAlign:'center'}} onPress={onSetTargets}>Add</Text>
     </View>
   :null}
 </>
@@ -739,7 +731,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     position: 'absolute',
     bottom: 25,
-    width:110,
+    width:100,
     marginTop: 50,
     padding: 6,
     alignItems: 'center',
@@ -807,7 +799,7 @@ const styles = StyleSheet.create({
     top: 60,
     borderRadius: 26,
     padding: 10,
-    alignItems: 'center',
+    justifyContent: 'flex-start',
     backgroundColor: 'white',
     shadowColor: 'black',
     flex: 1,

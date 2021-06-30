@@ -1,7 +1,7 @@
 export const updateCounter = async status => {
   try {
     const response = await fetch(
-      'http://192.248.153.241:3000/usercounter',
+      'https://quranlive.uk/usercounter',
       {
         // const response = await fetch('http://192.168.11.177:3000/usercounter',{
         method: 'put',

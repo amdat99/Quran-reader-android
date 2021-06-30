@@ -28,7 +28,7 @@ export function* addCopiesAsync({
 
   try {
     const response = yield fetch(
-      'http://192.248.153.241:3000/addcopy',
+      'https://quranlive.uk/addcopy',
       {
         // const response = yield fetch('http://192.168.11.177:3000/addcopy',{
         method: 'post',
@@ -55,7 +55,7 @@ export function* addCopiesAsync({
 export function* fetchCopiesAsync({payload: contentid}) {
   try {
     const response = yield fetch(
-      'http://192.248.153.241:3000/fetchcopies',
+      'https://quranlive.uk/fetchcopies',
       {
         // const response = yield fetch('http://192.168.11.177:3000/fetchcopies',{
         method: 'post',
@@ -79,7 +79,7 @@ export function* updateCopyAsync({payload: {id, page}}) {
 
   try {
     const response = yield fetch(
-      'http://192.248.153.241:3000/updatepage',
+      'https://quranlive.uk/updatepage',
       {
         // const response = yield fetch('http://192.168.11.177:3000/updatepage',{
         method: 'put',
@@ -106,7 +106,7 @@ export function* addBookmarksAsync({
 
   try {
     const response = yield fetch(
-      'http://192.248.153.241:3000/addbookmark',
+      'https://quranlive.uk/addbookmark',
       {
         // const response = yield fetch('http://192.168.11.177:3000/addbookmark',{
         method: 'post',
@@ -136,7 +136,7 @@ export function* addNotesAsync({
 
   try {
     const response = yield fetch(
-      'http://192.248.153.241:3000/addnote',
+      'https://quranlive.uk/addnote',
       {
         // const response = yield fetch('http://192.168.11.177:3000/addnote',{
         method: 'post',

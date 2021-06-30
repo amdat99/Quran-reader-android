@@ -111,8 +111,9 @@ function Register({signUpPending, toggleLogin,emailSignInPending}) {
 
         <TextInput
           autoCompleteType="email"
-          placeholder="Email ID"
+          placeholder="Enter Email "
       onChangeText={(text) => validateEmail(text)}
+      placeholderTextColor ='#383a3d'
       value={email}
           style={styles.inputs}
         />
@@ -121,11 +122,13 @@ function Register({signUpPending, toggleLogin,emailSignInPending}) {
           autoCompleteType="email"
           placeholder="Enter a Username"
           onChangeText={setDisplayName}
+          placeholderTextColor ='#383a3d'
           style={styles.inputs}
         />
 
         <TextInput
           autoCompleteType="password"
+          placeholderTextColor ='#383a3d'
           placeholder="Enter your password"
           secureTextEntry={true}
           onChangeText={setPassword}
@@ -133,6 +136,7 @@ function Register({signUpPending, toggleLogin,emailSignInPending}) {
         />
         <TextInput
           autoCompleteType="password"
+          placeholderTextColor ='#383a3d'
           placeholder=" Re-enter your password"
           secureTextEntry={true}
           onChangeText={setConfirmPassword}

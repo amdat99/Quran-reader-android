@@ -2,7 +2,7 @@ export const getCount = async () => {
   console.log('getting user count');
   try {
     const response = await fetch(
-      'http://192.248.153.241:3000/fetchcount',
+      'https://quranlive.uk/fetchcount',
       {
         //  const response = await fetch('http://192.168.11.177:3000/fetchcount',{
         method: 'post',
@@ -20,7 +20,26 @@ export const fetchProfiles = async () => {
   console.log('getting profile');
   try {
     const response = await fetch(
-      'http://192.248.153.241:3000/fetchprofiles',
+      'https://quranlive.uk/fetchprofiles',
+      {
+        //  const response = await fetch('http://192.168.11.177:3000/fetchcount',{
+        method: 'post',
+        headers: {'Content-Type': 'application/json'},
+      },
+    );
+    const data = await response.json();
+
+    return data;
+  } catch (e) {
+    console.log('fetch profile error', e);
+  }
+};
+
+export const fetchProfilesNum = async () => {
+  console.log('getting profile num');
+  try {
+    const response = await fetch(
+      'https://quranlive.uk/fetchprofilesnum',
       {
         //  const response = await fetch('http://192.168.11.177:3000/fetchcount',{
         method: 'post',
@@ -39,7 +58,7 @@ export const updateStatus = async (status, userid) => {
   console.log(status);
   try {
     const response = await fetch(
-      'http://192.248.153.241:3000/updatestatus',
+      'https://quranlive.uk/updatestatus',
       {
         //  const response = await fetch('http://192.168.11.177:3000/fetchcount',{
         method: 'put',
@@ -61,7 +80,7 @@ export const deleteCopy = async id => {
   console.log('deleting copies');
   try {
     const response = await fetch(
-      'http://192.248.153.241:3000/deletecopy',
+      'https://quranlive.uk/deletecopy',
       {
         //  const response = await fetch('http://192.168.11.177:3000/deletecopy',{
         method: 'post',

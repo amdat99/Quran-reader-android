@@ -36,7 +36,7 @@ export function* signInWithEmail({payload: {email, password}}) {
   try {
     // const response = yield fetch('http://192.168.11.177:3000/fetchuser',{
     const response = yield fetch(
-      'http://192.248.153.241:3000/fetchuser',
+      'https://quranlive.uk/fetchuser',
       {
         method: 'post',
         headers: {'Content-Type': 'application/json'},
@@ -105,7 +105,7 @@ export function* registerUserAsync({
 
   try {
     const response = yield fetch(
-      'http://192.248.153.241:3000/adduser',
+      'https://quranlive.uk/adduser',
       {
         // const response = yield fetch('http://192.168.11.177:3000/adduser',{
         method: 'post',

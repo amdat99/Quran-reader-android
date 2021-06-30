@@ -2,8 +2,9 @@ import io from 'socket.io-client';
 let socket;
 
 export const initiateSocket = room => {
-  socket = io('http://192.248.153.241:3000/', {
+  socket = io('https://quranlive.uk', {
     // socket = io("http://localhost:4000/", {
+    path: '/mysocket',
     transports: ['websocket'],
   });
   console.log(`Connecting`);
@@ -71,18 +72,32 @@ export const sendCounterRequest = () => {
   if (socket) socket.emit('onprayer');
 };
 
-export const enterOnGroupMessage = data => {
+export const enterOfferOrAnswer = data => {
   if (!socket) return;
-  socket.on('ongroupmessage', message => {
-    console.log('fetching messages');
+  socket.on('offeroranswer', message => {
+    console.log('getting sdp');
     return data(null, message);
   });
 };
 
-export const sendGroupMsgRequest = () => {
-  console.log(' sending message fetch req');
-  if (socket) socket.emit('ongroupmessage');
+export const sendOfferOrAnswer = (payload) => {
+if (socket) socket.emit('offeroranswer', {payload});
 };
+
+
+export const enterCandidate = data => {
+  if (!socket) return;
+  socket.on('candidate', message => {
+    console.log('getting candidate');
+    return data(null, message);
+  });
+};
+
+
+export const sendCand = (payload) => {
+  if (socket) socket.emit('candidate', {payload});
+  };
+
 
 export const enterCall = data => {
   if (!socket) return;

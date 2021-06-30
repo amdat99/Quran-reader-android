@@ -40,6 +40,7 @@ function SignIn({
         <TextInput
           autoCompleteType="email"
           placeholder="Enter your email"
+          placeholderTextColor ='#383a3d'
           onChangeText={setEmail}
           style={styles.inputs}
         />
@@ -48,6 +49,7 @@ function SignIn({
           autoCompleteType="password"
           type="password"
           placeholder="Enter your password"
+          placeholderTextColor ='#383a3d'
           onChangeText={setPassword}
           secureTextEntry={true}
           style={styles.inputs}
@@ -100,6 +102,11 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     padding: 5,
   },
+  inputs:{
+    color: 'black' ,
+    height: 60,
+    borderColor: 'black'
+  }
 });
 
 const mapDispatchToProps = dispatch => ({

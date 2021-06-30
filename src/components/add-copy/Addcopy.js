@@ -34,6 +34,7 @@ function AddCopy({
           </Text>
           <TextInput
             style={{marginBottom: 10}}
+            placeholderTextColor ='#383a3d'
             placeholder="Mushaf title"
             onChangeText={setTitle}
           />
@@ -112,7 +113,7 @@ const styles = StyleSheet.create({
     top: 55,
     borderRadius: 26,
     height: Dimensions.get('window').height / 2,
-    width: Dimensions.get('window').width / 1.2,
+    width: Dimensions.get('window').width / 1.4,
     alignItems: 'center',
     backgroundColor: 'white',
     shadowColor: 'black',

@@ -3,7 +3,7 @@ export async function fetchBookmarksAsync(id, contentid) {
   console.log('contentid',contentid)
   try {
     const response = await fetch(
-      'http://192.248.153.241:3000/fetchbookmarks',
+      'https://quranlive.uk/fetchbookmarks',
       {
         // const response = await fetch('http://192.168.11.177:3000/fetchbookmarks',{
         method: 'post',
@@ -25,7 +25,7 @@ export async function fetchBookmarksAsync(id, contentid) {
 export async function fetchNotesAsync(id, contentid, page) {
   try {
     const response = await fetch(
-      'http://192.248.153.241:3000/fetchnotes',
+      'https://quranlive.uk/fetchnotes',
       {
         // const response = await fetch('http://192.168.11.177:3000/fetchnotes',{
         method: 'post',
@@ -48,7 +48,7 @@ export async function fetchNotesAsync(id, contentid, page) {
 export async function fetchAllNotesAsync(id, contentid) {
   try {
     const response = await fetch(
-      'http://192.248.153.241:3000/fetchallnotes',
+      'https://quranlive.uk/fetchallnotes',
       {
         // const response = await fetch('http://192.168.11.177:3000/fetchallnotes',{
         method: 'post',
@@ -72,7 +72,7 @@ export const deleteBookmarkAsync = async bookmarkid => {
   try {
     //  const response = await fetch('http://192.168.11.177:3000/deletebookmark',{
     const response = await fetch(
-      'http://192.248.153.241:3000/deletebookmark',
+      'https://quranlive.uk/deletebookmark',
       {
         method: 'post',
         headers: {'Content-Type': 'application/json'},
@@ -93,7 +93,7 @@ export const deleteNoteAsync = async noteid => {
   console.log('deleting note');
   try {
     const response = await fetch(
-      'http://192.248.153.241:3000/deletenote',
+      'https://quranlive.uk/deletenote',
       {
         //  const response = await fetch('http://192.168.11.177:3000/deletenote',{
         method: 'post',

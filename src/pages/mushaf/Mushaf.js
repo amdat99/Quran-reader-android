@@ -1,4 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
+
+import SocketOverlay from '../socket-overlay/Socket-overlay';
 import {
   StyleSheet,
   Text,
@@ -176,7 +178,7 @@ class Mushaf extends React.Component {
       console.log(this.state.soundPage)
     if (this.sound1) this.sound1.release();
     this.sound1 = new Sound(
-        `http://192.248.153.241:3000/assets/page-audio/0${this.state.soundPage}.mp3`,
+        `https://quranlive.uk/assets/page-audio/0${this.state.soundPage}.mp3`,
         // `https://quran-live.s3.eu-west-2.amazonaws.com/audio1/0${this.state.currentPage}.mp3`,
         Sound.MAIN_BUNDLE,
 
@@ -444,6 +446,9 @@ this.props.shareData ?
 
 
         <View style={styles.container}>
+          {/* <View style={{position:'absolute',}}>
+        <SocketOverlay />
+        </View> */}
           {this.state.toggleNav ? (
             <>
               <View style={styles.headers}>
@@ -523,7 +528,7 @@ this.props.shareData ?
               {this.state.showMenu  && this.state.abovePdf ? (
                 <View style={styles.header}>
                   { !this.state.translationFullscreen ?
-                    <Text onPress={() => this.setState({abovePdf: !this.state.abovePdf, translationFullscreen:false})} style={styles.links}>
+                    <Text style={{position: 'absolute'}} onPress={() => this.setState({abovePdf: !this.state.abovePdf, translationFullscreen:false})} style={styles.links}>
                   {' '}
                   🔃                </Text>
   :null}
@@ -724,7 +729,7 @@ this.props.shareData ?
           {this.state.showMenu && !this.state.abovePdf ? (
                 <View style={styles.header2}>
                   {!this.state.translationFullscreen?
-                  <Text onPress={() => this.setState({abovePdf: !this.state.abovePdf,translationFullscreen:false})} style={styles.links}>
+                  <Text style={{position: 'absolute'}} onPress={() => this.setState({abovePdf: !this.state.abovePdf,translationFullscreen:false})} style={styles.links}>
                   {' '}
                   🔃  
                 </Text>
@@ -759,6 +764,7 @@ this.props.shareData ?
                 </View>
               ) : null}
        
+   
       </>
     );
   }
